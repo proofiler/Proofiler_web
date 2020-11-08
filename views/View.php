@@ -4,7 +4,6 @@ class View {
 	private $_file;
 	private $_title;
 	private $_menu;
-	private $_userManager;
 
 	public function __construct($anAction) {
 		$this->_file = 'views/view'.$anAction.'.php';

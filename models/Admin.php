@@ -1,7 +1,7 @@
 <?php
 
-class User {
-	private $_username;
+class Admin {
+	private $_email;
 	private $_password;
 
 	public function __construct($someData) {
@@ -17,16 +17,16 @@ class User {
 		}
 	}
 
-	public function setUsername($anUsername) {
-		$this->_username = $anUsername;
+	public function setEmail($anEmail) {
+		$this->_email = $anEmail;
 	}
 
 	public function setPassword($aPassword) {
 		$this->_password = $aPassword;
 	}
 
-	public function getUsername() {
-		return $this->_username;
+	public function getEmail() {
+		return $this->_email;
 	}
 
 	public function getPassword() {

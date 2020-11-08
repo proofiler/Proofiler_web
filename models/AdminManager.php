@@ -1,29 +1,29 @@
 <?php
 
-class UserManager extends Model {
-	public function getOneUser($anUsername) {
-		return $this->selectOne('USERS', 'username', $anUsername);
+class AdminManager extends Model {
+	public function getOneAdmin($anEmail) {
+		return $this->selectOne('ADMINS', 'email', $anEmail);
 	}
 
-	public function connectUser($anUsername, $aPassword) {
+	public function connect($anEmail, $aPassword) {
 		$result = false;
 
-		$user = $this->getOneUser($anUsername);
+		$admin = $this->getOneAdmin($anEmail);
 
-		if ($user) {
-			$aPassword = password_verify($aPassword, $user->getPassword());
+		if ($admin) {
+			$aPassword = password_verify($aPassword, $admin->getPassword());
 
 			if ($aPassword) {
-				$username = $user->getUsername();
-				$password = $user->getPassword();
+				$email = $admin->getEmail();
+				$password = $admin->getPassword();
 
-				$request = $this->getBDD()->prepare('SELECT * FROM USERS WHERE username = :username AND password = :password');
-				$request->bindValue(':username', $username);
+				$request = $this->getBDD()->prepare('SELECT * FROM ADMINS WHERE email = :email AND password = :password');
+				$request->bindValue(':email', $email);
 				$request->bindValue(':password', $password);
 				$request->execute();
 
 				if ($data = $request->fetch(PDO::FETCH_ASSOC)) {
-					$result = new User($data);
+					$result = new Admin($data);
 				}
 
 				$request->closeCursor();
@@ -33,15 +33,15 @@ class UserManager extends Model {
 		return $result;
 	}
 
-	public function createUserSession($anUsername) {
+	public function createSession($anEmail) {
 		$token = session_id().microtime().rand(0,9999999999);
 		$token = hash('sha512', $token);
 		setcookie(SESSION_NAME, $token, time() + (60 * 20), '/', null, false, true);
 		$_SESSION[SESSION_NAME] = $token;
-		$_SESSION['username'] = $anUsername;
+		$_SESSION['email'] = $anEmail;
 	}
 
-	public function checkUserSession() {
+	public function checkSession() {
 		if (!isset($_COOKIE[SESSION_NAME])) {
 			$_SESSION = array();
 			session_destroy();

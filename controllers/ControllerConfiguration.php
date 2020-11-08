@@ -2,7 +2,7 @@
 
 class ControllerConfiguration {
 	private $_view;
-	private $_userManager;
+	private $_AdminManager;
 
 	public function __construct($anURL) {
 		if (count($anURL) > 1) {
@@ -13,8 +13,8 @@ class ControllerConfiguration {
 	}
 
 	private function main() {
-		$this->_userManager = new UserManager();
-		$this->_userManager->checkUserSession();
+		$this->_AdminManager = new AdminManager();
+		$this->_AdminManager->checkSession();
 
 		$this->_view = new View('Configuration');
 		$this->_view->generate(array());

@@ -2,7 +2,7 @@
 
 class ControllerSignin {
 	private $_view;
-	private $_userManager;
+	private $_AdminManager;
 	private $_errorMessage = false;
 
 	public function __construct($anURL) {
@@ -15,24 +15,24 @@ class ControllerSignin {
 
 	private function main() {
 		if (isset($_POST['signin'])) {
-			if ((isset($_POST['username']) && !empty($_POST['username'])) && (isset($_POST['password']) && !empty($_POST['password']))) {
-				$username = htmlspecialchars($_POST['username']);
+			if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['password']) && !empty($_POST['password']))) {
+				$email = htmlspecialchars($_POST['email']);
 				$password = htmlspecialchars($_POST['password']);
-				
-				if (strlen($username) < 256) {
-					$this->_userManager = new UserManager();
-					$user = $this->_userManager->connectUser($username, $password);
 
-					if ($user) {
-						$this->_userManager->createUserSession($user->getusername());
+				if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+					$this->_AdminManager = new AdminManager();
+					$admin = $this->_AdminManager->connect($email, $password);
+
+					if ($admin) {
+						$this->_AdminManager->createSession($admin->getEmail());
 						header('Location: '.URL.'configuration');
 						exit;
 					} else {
-						$this->_errorMessage = 'Incorrect username and/or password';
+						$this->_errorMessage = 'Incorrect email and/or password';
 						$this->printForm();
 					}
 				} else {
-					$this->_errorMessage = 'Username too long';
+					$this->_errorMessage = 'Please enter a valid email';
 					$this->printForm();
 				}
 			} else {
