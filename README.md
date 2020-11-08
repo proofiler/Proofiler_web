@@ -7,14 +7,26 @@ The proofiler website allows you to view statistics on all the analyses performe
 ### Project Basis
 
 - [x] Base development
-- [ ] Database creation
+- [x] Database creation
 
 ### Unauthenticated part
 
-- [ ] Dashboarding functionalities development (to be detailed)
+- [ ] Displaying the number of scans that have detected viruses in relation to the total number of scans
+- [ ] Displaying the number of scanned files
+- [ ] Displaying the number of detected viruses
+- [ ] Displaying the most detected viruses
+- [ ] Display of the number of viruses detected and scan performed per month
+- [ ] Displaying the average time of a scan
 
 ### Authenticated part
 
 - [x] Login page development
 - [x] Session management
-- [ ] Configuration functionalities development (to be detailed)
+- [ ] Displaying the USBs flash drives containing the most viruses
+- [ ] Send an email to the admin when a virus is detected
+- [ ] CRUD admins
+- [ ] CRUD extensions
+- [ ] CRUD employees
+- [ ] CRUD USBs
+- [ ] CRUD scans
+- [ ] CRUD viruses
