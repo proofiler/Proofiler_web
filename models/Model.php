@@ -16,6 +16,22 @@ class Model {
 		return self::$_BDD;
 	}
 
+	protected function selectAll($aTable) {
+		$result = [];
+		$object = substr(ucfirst(strtolower($aTable)), 0, -1);
+
+		$request = $this->getBDD()->prepare('SELECT * FROM '.$aTable);
+		$request->execute();
+
+		while($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result[] = new $object($data);
+		}
+
+		$request->closeCursor();
+
+		return $result;
+	}
+
 	protected function selectOne($aTable, $anAttribut, $anAttributValue) {
 		$result = false;
 		$object = substr(ucfirst(strtolower($aTable)), 0, -1);
@@ -31,5 +47,50 @@ class Model {
 		$request->closeCursor();
 
 		return $result;
+	}
+
+	protected function insertOne($aTable, $someData) {
+		$realRequest = 'INSERT INTO '.$aTable.' (';
+		foreach ($someData as $key => $value) {
+			$realRequest .= $key.', ';
+		}
+		$realRequest = substr($realRequest, 0, -2);
+		$realRequest .= ') VALUES (';
+		foreach ($someData as $key => $value) {
+			$realRequest .= ':'.$key.', ';
+		}
+		$realRequest = substr($realRequest, 0, -2);
+		$realRequest .= ')';
+
+		$request = $this->getBDD()->prepare($realRequest);
+		foreach ($someData as $key => $value) {
+			$request->bindValue(':'.$key, $value);
+		}
+		$request->execute();
+		$request->closeCursor();
+	}
+
+	protected function updateOne($aTable, $anAttribut, $anAttributValue, $someData) {
+		$realRequest = 'UPDATE '.$aTable.' SET ';
+		foreach ($someData as $key => $value) {
+			$realRequest .= $key.' = :'.$key.', ';
+		}
+		$realRequest = substr($realRequest, 0, -2);
+		$realRequest .= ' WHERE '.$anAttribut.' = :'.$anAttribut.'1';
+		$request = $this->getBDD()->prepare($realRequest);
+		foreach ($someData as $key => $value) {
+			$request->bindValue(':'.$key, $value);
+		}
+		$request->bindValue(':'.$anAttribut.'1', $anAttributValue);
+		$request->execute();
+		$request->closeCursor();
+	}
+
+	protected function deleteOne($aTable, $anAttribut, $anAttributValue) {
+		$realRequest = 'DELETE FROM '.$aTable.' WHERE '.$anAttribut.' = :'.$anAttribut;
+		$request = $this->getBDD()->prepare($realRequest);
+		$request->bindValue(':'.$anAttribut, $anAttributValue);
+		$request->execute();
+		$request->closeCursor();
 	}
 }

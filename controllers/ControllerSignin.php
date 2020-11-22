@@ -2,7 +2,7 @@
 
 class ControllerSignin {
 	private $_view;
-	private $_AdminManager;
+	private $_adminManager;
 	private $_errorMessage = false;
 
 	public function __construct($anURL) {
@@ -20,11 +20,11 @@ class ControllerSignin {
 				$password = htmlspecialchars($_POST['password']);
 
 				if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					$this->_AdminManager = new AdminManager();
-					$admin = $this->_AdminManager->connect($email, $password);
+					$this->_adminManager = new AdminManager();
+					$admin = $this->_adminManager->connect($email, $password);
 
 					if ($admin) {
-						$this->_AdminManager->createSession($admin->getEmail());
+						$this->_adminManager->createSession($admin->getEmail());
 						header('Location: '.URL.'configuration');
 						exit;
 					} else {

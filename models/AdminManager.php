@@ -1,8 +1,30 @@
 <?php
 
 class AdminManager extends Model {
+	public function getAllAdmins() {
+		return $this->selectAll('ADMINS');
+	}
+
 	public function getOneAdmin($anEmail) {
 		return $this->selectOne('ADMINS', 'email', $anEmail);
+	}
+
+	public function insertOneAdmin($someData) {
+		$someData['password'] = password_hash($someData['password'], PASSWORD_DEFAULT);
+		
+		$this->insertOne('ADMINS', $someData);
+	}
+
+	public function updateOneAdmin($anAttribut, $someData) {
+		if (isset($someData['password']) && !empty($someData['password'])) {
+			$someData['password'] = password_hash($someData['password'], PASSWORD_DEFAULT);
+		}
+
+		$this->updateOne('ADMINS', 'email', $anAttribut, $someData);
+	}
+
+	public function deleteOneAdmin($anEmail) {
+		$this->deleteOne('ADMINS', 'email', $anEmail);
 	}
 
 	public function connect($anEmail, $aPassword) {
