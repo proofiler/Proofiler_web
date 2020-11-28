@@ -35,6 +35,6 @@
 						?>
 					</form>
 				<?php endforeach; ?>
-			</fieldset>			
+			</fieldset>	
 		</form>
 </section>

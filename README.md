@@ -25,7 +25,7 @@ The proofiler website allows you to view statistics on all the analyses performe
 - [ ] Displaying the USBs flash drives containing the most viruses
 - [ ] Send an email to the admin when a virus is detected
 - [x] CRUD admins
-- [ ] CRUD extensions
+- [x] CRUD extensions
 - [ ] CRUD employees
 - [ ] CRUD USBs
 - [ ] CRUD scans

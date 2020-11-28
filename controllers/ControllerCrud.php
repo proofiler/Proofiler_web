@@ -3,6 +3,7 @@
 class ControllerCrud {
 	private $_view;
 	private $_adminManager;
+	private $_extensionManager;
 	private $_errorMessageCreate = false;
 	private $_errorMessageOthers = false;
 	private $_informationMessageCreate = false;
@@ -18,6 +19,7 @@ class ControllerCrud {
 
 	private function main($anURL) {
 		$this->_adminManager = new AdminManager();
+		$this->_extensionManager = new ExtensionManager();
 		$this->_adminManager->checkSession();
 		if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['delete'])) {
 			$this->CRUDExecuter($anURL[1]);
@@ -30,6 +32,9 @@ class ControllerCrud {
 		switch ($aCRUD) {
 			case 'admins':
 				$this->CRUDRouterAdmin();
+				break;
+			case 'extensions':
+				$this->CRUDRouterExtension();
 				break;
 			default:
 				throw new Exception('Page not found');
@@ -52,6 +57,19 @@ class ControllerCrud {
 
 				$this->CRUDRouter($aCRUD);
 				break;
+			case 'extensions':
+				if (isset($_POST['add'])) {
+					$this->CRUDExecuterExtensionAdd();
+				} else if (isset($_POST['update'])) {
+					$this->CRUDExecuterExtensionUpdate();
+				} else if (isset($_POST['delete'])) {
+					$this->CRUDExecuterExtensionDelete();
+				} else {
+					throw new Exception('Page not found');
+				}
+
+				$this->CRUDRouter($aCRUD);
+				break;
 			default:
 				throw new Exception('Page not found');
 				break;
@@ -63,6 +81,13 @@ class ControllerCrud {
 
 		$this->_view = new View('Crudadmin');
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'admins' => $admins));
+	}
+
+	private function CRUDRouterExtension() {
+		$extensions = $this->_extensionManager->getAllExtensions();
+
+		$this->_view = new View('Crudextension');
+		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'extensions' => $extensions));
 	}
 
 	private function CRUDExecuterAdminAdd() {
@@ -92,6 +117,24 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageCreate = 'Please fill in all fields';
 			$this->CRUDRouter('admins');
+		}
+	}
+
+	private function CRUDExecuterExtensionAdd() {
+		if (isset($_POST['name']) && !empty($_POST['name'])) {
+			$name = htmlspecialchars($_POST['name']);
+
+			if (!$this->_extensionManager->getOneExtension($name)) {
+				$this->_extensionManager->insertOneExtension(array('name' => $name));
+
+				$this->_informationMessageCreate = 'The new extension has been correctly created';
+			} else {
+				$this->_errorMessageCreate = 'This extension is already in use';
+				$this->CRUDRouter('extensions');
+			}
+		} else {
+			$this->_errorMessageCreate = 'Please fill in all fields';
+			$this->CRUDRouter('extensions');
 		}
 	}
 
@@ -171,6 +214,32 @@ class ControllerCrud {
 		}
 	}
 
+	private function CRUDExecuterExtensionUpdate() {
+		if (isset($_POST['id']) && !empty($_POST['id'])) {
+			if (isset($_POST['name']) && !empty($_POST['name'])) {
+				$id = htmlspecialchars(($_POST['id']));
+				$name = htmlspecialchars($_POST['name']);
+
+				$extension = $this->_extensionManager->getOneExtension($id);
+
+				if ($extension) {
+					$this->_extensionManager->updateOneExtension($id, array('name' => $name));
+
+					$this->_informationMessageOthers = 'The extension has been correctly updated';
+				} else {
+					$this->_errorMessageOthers = 'An error has occurred';
+					$this->CRUDRouter('extensions');
+				}
+			} else {
+				$this->_errorMessageCreate = 'Please fill in all fields';
+				$this->CRUDRouter('extensions');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('extensions');
+		}
+	}
+
 	private function CRUDExecuterAdminDelete() {
 		if (isset($_POST['id']) && !empty($_POST['id'])) {
 			$id = htmlspecialchars($_POST['id']);
@@ -195,6 +264,26 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageOthers = 'An error has occurred';
 			$this->CRUDRouter('admins');
+		}
+	}
+
+	private function CRUDExecuterExtensionDelete() {
+		if (isset($_POST['id']) && !empty($_POST['id'])) {
+			$id = htmlspecialchars($_POST['id']);
+
+			$extension = $this->_extensionManager->getOneExtension($id);
+
+			if ($extension) {
+				$this->_extensionManager->deleteOneExtension($id);
+
+				$this->_informationMessageOthers = 'The extension has been correctly deleted';
+			} else {
+				$this->_errorMessageOthers = 'An error has occurred';
+				$this->CRUDRouter('extensions');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('extensions');
 		}
 	}
 }
