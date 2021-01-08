@@ -22,7 +22,7 @@
 				<?php foreach ($admins as $admin): ?>
 					<form action="" method="POST">
 						<input type="hidden" name="id" value="<?= $admin->getEmail() ?>">
-						<label>Email : </label><input type="email" name="email" placeholder="Enter your email" value="<?= $admin->getEmail() ?>" required /><br>
+						<label>Email : </label><input type="email" name="email" placeholder="Enter your new email" value="<?= $admin->getEmail() ?>" required /><br>
 						<label>Old password : </label><input type="password" name="oldPassword" placeholder="Enter your old password" /><br>
 						<label>New password : </label><input type="password" name="newPassword" placeholder="Enter your new password" /><br>
 						<label>Confirm password : </label><input type="password" name="confirmPassword" placeholder="Confirm your password" /><br>
@@ -36,5 +36,5 @@
 					</form>
 				<?php endforeach; ?>
 			</fieldset>	
-		</form>
+		</fieldset>
 </section>

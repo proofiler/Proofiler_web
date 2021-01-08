@@ -6,6 +6,7 @@
 		<ul>
 			<li><a href="<?= URL.'crud/admins' ?>">CRUD Admins</a></li>
 			<li><a href="<?= URL.'crud/extensions' ?>">CRUD Extensions</a></li>
+			<li><a href="<?= URL.'crud/employees' ?>">CRUD Employees</a></li>
 		</ul>
 		<li><a href="<?= URL.'logout' ?>">Log out</a></li>
 	</ul>

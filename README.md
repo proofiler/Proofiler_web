@@ -26,7 +26,7 @@ The proofiler website allows you to view statistics on all the analyses performe
 - [ ] Send an email to the admin when a virus is detected
 - [x] CRUD admins
 - [x] CRUD extensions
-- [ ] CRUD employees
+- [x] CRUD employees
 - [ ] CRUD USBs
 - [ ] CRUD scans
 - [ ] CRUD viruses

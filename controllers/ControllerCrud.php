@@ -3,6 +3,7 @@
 class ControllerCrud {
 	private $_view;
 	private $_adminManager;
+	private $_employeeManager;
 	private $_extensionManager;
 	private $_errorMessageCreate = false;
 	private $_errorMessageOthers = false;
@@ -19,6 +20,7 @@ class ControllerCrud {
 
 	private function main($anURL) {
 		$this->_adminManager = new AdminManager();
+		$this->_employeeManager = new EmployeeManager();
 		$this->_extensionManager = new ExtensionManager();
 		$this->_adminManager->checkSession();
 		if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['delete'])) {
@@ -35,6 +37,9 @@ class ControllerCrud {
 				break;
 			case 'extensions':
 				$this->CRUDRouterExtension();
+				break;
+			case 'employees':
+				$this->CRUDRouterEmployee();
 				break;
 			default:
 				throw new Exception('Page not found');
@@ -70,6 +75,19 @@ class ControllerCrud {
 
 				$this->CRUDRouter($aCRUD);
 				break;
+			case 'employees':
+				if (isset($_POST['add'])) {
+					$this->CRUDExecuterEmployeeAdd();
+				} else if (isset($_POST['update'])) {
+					$this->CRUDExecuterEmployeeUpdate();
+				} else if (isset($_POST['delete'])) {
+					$this->CRUDExecuterEmployeeDelete();
+				} else {
+					throw new Exception('Page not found');
+				}
+
+				$this->CRUDRouter($aCRUD);
+				break;
 			default:
 				throw new Exception('Page not found');
 				break;
@@ -88,6 +106,13 @@ class ControllerCrud {
 
 		$this->_view = new View('Crudextension');
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'extensions' => $extensions));
+	}
+
+	private function CRUDRouterEmployee() {
+		$employees = $this->_employeeManager->getAllEmployees();
+
+		$this->_view = new View('Crudemployee');
+		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'employees' => $employees));
 	}
 
 	private function CRUDExecuterAdminAdd() {
@@ -135,6 +160,31 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageCreate = 'Please fill in all fields';
 			$this->CRUDRouter('extensions');
+		}
+	}
+
+	private function CRUDExecuterEmployeeAdd() {
+		if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['firstName']) && !empty($_POST['firstName'])) && (isset($_POST['lastName']) && !empty($_POST['lastName']))) {
+			$email = htmlspecialchars($_POST['email']);
+			$firstName = htmlspecialchars($_POST['firstName']);
+			$lastName = htmlspecialchars($_POST['lastName']);
+
+			if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+				if (!$this->_employeeManager->getOneEmployee($email)) {
+					$this->_employeeManager->insertOneEmployee(array('email' => $email, 'firstName' => $firstName, 'lastName' => $lastName));
+
+					$this->_informationMessageCreate = 'The new employee has been correctly created';
+				} else {
+					$this->_errorMessageCreate = 'This email is already in use';
+					$this->CRUDRouter('employees');
+				}
+			} else {
+				$this->_errorMessageCreate = 'Please enter a valid email';
+				$this->CRUDRouter('employees');
+			}
+		} else {
+			$this->_errorMessageCreate = 'Please fill in all fields';
+			$this->CRUDRouter('employees');
 		}
 	}
 
@@ -240,6 +290,39 @@ class ControllerCrud {
 		}
 	}
 
+	private function CRUDExecuterEmployeeUpdate() {
+		if (isset($_POST['id']) && !empty($_POST['id'])) {
+			if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['firstName']) && !empty($_POST['firstName'])) && (isset($_POST['lastName']) && !empty($_POST['lastName']))) {
+				$id = htmlspecialchars(($_POST['id']));
+				$email = htmlspecialchars($_POST['email']);
+				$firstName = htmlspecialchars($_POST['firstName']);
+				$lastName = htmlspecialchars($_POST['lastName']);
+
+				if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+					$employee = $this->_employeeManager->getOneEmployee($id);
+
+					if ($employee) {
+						$this->_employeeManager->updateOneEmployee($id, array('email' => $email, 'firstName' => $firstName, 'lastName' => $lastName));
+
+						$this->_informationMessageOthers = 'The employee has been correctly updated';
+					} else {
+						$this->_errorMessageOthers = 'An error has occured';
+						$this->CRUDRouter('employees');
+					}
+				} else {
+					$this->_errorMessageOthers = 'Please enter a valid email';
+					$this->CRUDRouter('employees');
+				}
+			} else {
+				$this->_errorMessageOthers = 'Please fill in all fields';
+				$this->CRUDRouter('employees');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('employees');
+		}
+	}
+
 	private function CRUDExecuterAdminDelete() {
 		if (isset($_POST['id']) && !empty($_POST['id'])) {
 			$id = htmlspecialchars($_POST['id']);
@@ -284,6 +367,26 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageOthers = 'An error has occurred';
 			$this->CRUDRouter('extensions');
+		}
+	}
+
+	private function CRUDExecuterEmployeeDelete() {
+		if (isset($_POST['id']) && !empty($_POST['id'])) {
+			$id = htmlspecialchars(($_POST['id']));
+
+			$employee = $this->_employeeManager->getOneEmployee($id);
+
+			if ($employee) {
+				$this->_employeeManager->deleteOneEmployee($id);
+
+				$this->_informationMessageOthers = 'The employee has been correctly deleted';
+			} else {
+				$this->_errorMessageOthers = 'An error has occurred';
+				$this->CRUDRouter('employees');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('employees');
 		}
 	}
 }
