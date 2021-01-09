@@ -2,6 +2,7 @@
 
 class ControllerCrud {
 	private $_view;
+	private $_usbManager;
 	private $_adminManager;
 	private $_employeeManager;
 	private $_extensionManager;
@@ -19,6 +20,7 @@ class ControllerCrud {
 	}
 
 	private function main($anURL) {
+		$this->_usbManager = new UsbManager();
 		$this->_adminManager = new AdminManager();
 		$this->_employeeManager = new EmployeeManager();
 		$this->_extensionManager = new ExtensionManager();
@@ -40,6 +42,9 @@ class ControllerCrud {
 				break;
 			case 'employees':
 				$this->CRUDRouterEmployee();
+				break;
+			case 'usbs':
+				$this->CRUDRouterUsb();
 				break;
 			default:
 				throw new Exception('Page not found');
@@ -88,6 +93,19 @@ class ControllerCrud {
 
 				$this->CRUDRouter($aCRUD);
 				break;
+			case 'usbs':
+				if (isset($_POST['add'])) {
+					$this->CRUDExecuterUsbAdd();
+				} else if (isset($_POST['update'])) {
+					$this->CRUDExecuterUsbUpdate();
+				} else if (isset($_POST['delete'])) {
+					$this->CRUDExecuterUsbDelete();
+				} else {
+					throw new Exception('Page not found');
+				}
+
+				$this->CRUDRouter($aCRUD);
+				break;
 			default:
 				throw new Exception('Page not found');
 				break;
@@ -113,6 +131,13 @@ class ControllerCrud {
 
 		$this->_view = new View('Crudemployee');
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'employees' => $employees));
+	}
+
+	private function CRUDRouterUsb() {
+		$usbs = $this->_usbManager->getAllUsbs();
+
+		$this->_view = new View('Crudusb');
+		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'usbs' => $usbs));
 	}
 
 	private function CRUDExecuterAdminAdd() {
@@ -185,6 +210,32 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageCreate = 'Please fill in all fields';
 			$this->CRUDRouter('employees');
+		}
+	}
+
+	private function CRUDExecuterUsbAdd() {
+		if ((isset($_POST['uuid']) && !empty($_POST['uuid'])) && (isset($_POST['brand']) && !empty($_POST['brand'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
+			$uuid = htmlspecialchars($_POST['uuid']);
+			$brand = htmlspecialchars($_POST['brand']);
+			$emailEmployee = htmlspecialchars($_POST['emailEmployee']);
+
+			if (filter_var($emailEmployee, FILTER_VALIDATE_EMAIL)) {
+				if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
+					date_default_timezone_set('Europe/Paris');
+					$this->_usbManager->insertOneUsb(array('id' => $this->_usbManager->getMaximumUsb() + 1, 'uuid' => $uuid, 'brand' => $brand, 'registration' => date('Y-m-d H:i:s'), 'emailEmployee' => $emailEmployee));
+
+					$this->_informationMessageCreate = 'The new USB has been correctly created';
+				} else {
+					$this->_errorMessageCreate = 'The email does not exist';
+					$this->CRUDRouter('usbs');
+				}
+			} else {
+				$this->_errorMessageCreate = 'Please enter a valid email';
+				$this->CRUDRouter('usbs');
+			}
+		} else {
+			$this->_errorMessageCreate = 'Please fill in all fields';
+			$this->CRUDRouter('usbs');
 		}
 	}
 
@@ -323,6 +374,59 @@ class ControllerCrud {
 		}
 	}
 
+	private function CRUDExecuterUsbUpdate() {
+		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
+			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['uuid']) && !empty($_POST['uuid'])) && (isset($_POST['brand']) && !empty($_POST['brand'])) && (isset($_POST['registration']) && !empty($_POST['registration'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
+				$idNotModified = htmlspecialchars($_POST['idNotModified']);
+				$idModified = htmlspecialchars($_POST['idModified']);
+				$uuid = htmlspecialchars($_POST['uuid']);
+				$brand = htmlspecialchars($_POST['brand']);
+				$registration = htmlspecialchars($_POST['registration']);
+				$emailEmployee = htmlspecialchars($_POST['emailEmployee']);
+
+				if (is_numeric($idNotModified)) {
+					if (is_numeric($idModified)) {
+						if (preg_match('/^([0-9]{4})-([0-1][0-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/', $registration)) {
+							if (filter_var($emailEmployee, FILTER_VALIDATE_EMAIL)) {
+								if (!$this->_usbManager->getOneUsb($idModified)) {
+									if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
+										$this->_usbManager->updateOneUsb($idNotModified, array('id' => $idModified, 'uuid' => $uuid, 'brand' => $brand, 'registration' => $registration, 'emailEmployee' => $emailEmployee));
+
+										$this->_informationMessageOthers = 'The USB has been correctly updated';
+									} else {
+										$this->_errorMessageOthers = 'The email does not exist';
+										$this->CRUDRouter('usbs');
+									}
+								} else {
+									$this->_errorMessageOthers = 'This ID is already in use';
+									$this->CRUDRouter('usbs');
+								}
+							} else {
+								$this->_errorMessageOthers = 'Please enter a valid email';
+								$this->CRUDRouter('usbs');
+							}
+						} else {
+							$this->_errorMessageOthers = 'Please enter a valid date';
+							$this->CRUDRouter('usbs');
+						}
+					} else {
+						$this->_errorMessageOthers = 'Please enter a valid ID';
+						$this->CRUDRouter('usbs');
+					}
+				} else {
+					$this->_errorMessageOthers = 'An error has occurred';
+					$this->CRUDRouter('usbs');
+				}
+			} else {
+				$this->_errorMessageOthers = 'Please fill in all fields';
+				$this->CRUDRouter('usbs');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('usbs');
+		}
+	}
+
 	private function CRUDExecuterAdminDelete() {
 		if (isset($_POST['id']) && !empty($_POST['id'])) {
 			$id = htmlspecialchars($_POST['id']);
@@ -387,6 +491,32 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageOthers = 'An error has occurred';
 			$this->CRUDRouter('employees');
+		}
+	}
+
+	private function CRUDExecuterUsbDelete() {
+		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
+			$idNotModified = htmlspecialchars(($_POST['idNotModified']));
+
+			if (is_numeric($idNotModified)) {
+
+				$usb = $this->_usbManager->getOneUsb($idNotModified);
+
+				if ($usb) {
+					$this->_usbManager->deleteOneUsb($idNotModified);
+
+					$this->_informationMessageOthers = 'The USB has been correctly deleted';
+				} else {
+					$this->_errorMessageOthers = 'An error has occurred';
+					$this->CRUDRouter('usbs');
+				}
+			} else {
+				$this->_errorMessageOthers = 'An error has occurred';
+				$this->CRUDRouter('usbs');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('usbs');
 		}
 	}
 }

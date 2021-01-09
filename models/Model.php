@@ -93,4 +93,19 @@ class Model {
 		$request->execute();
 		$request->closeCursor();
 	}
+
+	protected function getMaximum($aTable, $anAttribut) {
+		$result = 0;
+
+		$request = $this->getBDD()->prepare('SELECT MAX('.$anAttribut.') AS '.$anAttribut.' FROM '.$aTable);
+		$request->execute();
+
+		if ($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result = $data[$anAttribut];
+		}
+
+		$request->closeCursor();
+
+		return $result;
+	}
 }
