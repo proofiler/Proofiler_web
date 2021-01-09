@@ -34,13 +34,13 @@ try {
 			CONSTRAINT EMPLOYEES_primary_key PRIMARY KEY (email)
 		);
 		CREATE TABLE USBS (
-			id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
-			uuid         VARCHAR(255) NOT NULL,
-			brand        VARCHAR(255) NOT NULL,
-			registration DATETIME     NOT NULL,
-			mailEmployee VARCHAR(255) NOT NULL,
+			id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+			uuid          VARCHAR(255) NOT NULL,
+			brand         VARCHAR(255) NOT NULL,
+			registration  DATETIME     NOT NULL,
+			emailEmployee VARCHAR(255) NOT NULL,
 			CONSTRAINT USBS_primary_key PRIMARY KEY (id),
-			CONSTRAINT USBS_foreign_key FOREIGN KEY (mailEmployee) REFERENCES EMPLOYEES(email) ON UPDATE CASCADE ON DELETE CASCADE
+			CONSTRAINT USBS_foreign_key FOREIGN KEY (emailEmployee) REFERENCES EMPLOYEES(email) ON UPDATE CASCADE ON DELETE CASCADE
 		);
 		CREATE TABLE SCANS (
 			id       INT UNSIGNED       NOT NULL AUTO_INCREMENT,
@@ -73,11 +73,11 @@ try {
 		INSERT INTO EMPLOYEES  (email, firstName, lastName)                            VALUES ('mwalker@proofiler.com', 'Michael', 'Walker');
 		INSERT INTO EMPLOYEES  (email, firstName, lastName)                            VALUES ('alivingston@proofiler.com', 'Aubrey', 'Livingston');
 		INSERT INTO EMPLOYEES  (email, firstName, lastName)                            VALUES ('sgray@proofiler.com', 'Samantha', 'Gray');
-		INSERT INTO USBS       (uuid, brand, registration, mailEmployee)               VALUES ('3d03ea66-7c32-47c9-981c-556a12d76968', 'Kingston', '2019-04-20 07:45:23', 'mwalker@proofiler.com');
-		INSERT INTO USBS       (uuid, brand, registration, mailEmployee)               VALUES ('8adb083e-c46e-4e27-bb53-2bb6ee40deaa', 'SanDisk', '2019-09-07 13:12:42', 'mwalker@proofiler.com');
-		INSERT INTO USBS       (uuid, brand, registration, mailEmployee)               VALUES ('8adb083e-c46e-4e27-bb53-2bb6ee40deaa', 'SanDisk', '2019-12-30 10:57:33', 'alivingston@proofiler.com');
-		INSERT INTO USBS       (uuid, brand, registration, mailEmployee)               VALUES ('fd04587f-4477-463c-ba42-e388afda75f4', 'Patriot', '2020-06-18 17:24:13', 'sgray@proofiler.com');
-		INSERT INTO USBS       (uuid, brand, registration, mailEmployee)               VALUES ('3d03ea66-7c32-47c9-981c-556a12d76968', 'KingSton', '2020-11-01 15:30:02', 'sgray@proofiler.com');
+		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('3d03ea66-7c32-47c9-981c-556a12d76968', 'Kingston', '2019-04-20 07:45:23', 'mwalker@proofiler.com');
+		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('8adb083e-c46e-4e27-bb53-2bb6ee40deaa', 'SanDisk', '2019-09-07 13:12:42', 'mwalker@proofiler.com');
+		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('8adb083e-c46e-4e27-bb53-2bb6ee40deaa', 'SanDisk', '2019-12-30 10:57:33', 'alivingston@proofiler.com');
+		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('fd04587f-4477-463c-ba42-e388afda75f4', 'Patriot', '2020-06-18 17:24:13', 'sgray@proofiler.com');
+		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('3d03ea66-7c32-47c9-981c-556a12d76968', 'KingSton', '2020-11-01 15:30:02', 'sgray@proofiler.com');
 		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-04-30 12:10:15', 23, 30, 0, 0, 1);
 		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-09-07 14:28:53', 3, 1, 0, 0, 2);
 		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-10-09 09:36:18', 7, 5, 1, 0, 1);
