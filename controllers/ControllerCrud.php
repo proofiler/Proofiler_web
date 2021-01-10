@@ -3,6 +3,7 @@
 class ControllerCrud {
 	private $_view;
 	private $_usbManager;
+	private $_scanManager;
 	private $_adminManager;
 	private $_employeeManager;
 	private $_extensionManager;
@@ -21,6 +22,7 @@ class ControllerCrud {
 
 	private function main($anURL) {
 		$this->_usbManager = new UsbManager();
+		$this->_scanManager = new ScanManager();
 		$this->_adminManager = new AdminManager();
 		$this->_employeeManager = new EmployeeManager();
 		$this->_extensionManager = new ExtensionManager();
@@ -45,6 +47,9 @@ class ControllerCrud {
 				break;
 			case 'usbs':
 				$this->CRUDRouterUsb();
+				break;
+			case 'scans':
+				$this->CRUDRouterScan();
 				break;
 			default:
 				throw new Exception('Page not found');
@@ -106,6 +111,19 @@ class ControllerCrud {
 
 				$this->CRUDRouter($aCRUD);
 				break;
+			case 'scans':
+				if (isset($_POST['add'])) {
+					$this->CRUDExecuterScanAdd();
+				} else if (isset($_POST['update'])) {
+					$this->CRUDExecuterScanUpdate();
+				} else if (isset($_POST['delete'])) {
+					$this->CRUDExecuterScanDelete();
+				} else {
+					throw new Exception('Page not found');
+				}
+
+				$this->CRUDRouter($aCRUD);
+				break;
 			default:
 				throw new Exception('Page not found');
 				break;
@@ -138,6 +156,13 @@ class ControllerCrud {
 
 		$this->_view = new View('Crudusb');
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'usbs' => $usbs));
+	}
+
+	private function CRUDRouterScan() {
+		$scans = $this->_scanManager->getAllScans();
+
+		$this->_view = new View('Crudscan');
+		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'scans' => $scans));
 	}
 
 	private function CRUDExecuterAdminAdd() {
@@ -236,6 +261,54 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageCreate = 'Please fill in all fields';
 			$this->CRUDRouter('usbs');
+		}
+	}
+
+	private function CRUDExecuterScanAdd() {
+		if ((isset($_POST['duration']) && !empty($_POST['duration'])) && (isset($_POST['nbFiles']) && !empty($_POST['nbFiles'])) && (isset($_POST['nbVirus']) && !empty($_POST['nbVirus'])) && (isset($_POST['nbErrors']) && !empty($_POST['nbErrors'])) && (isset($_POST['idUsb']) && !empty($_POST['idUsb']))) {
+			$duration = htmlspecialchars($_POST['duration']);
+			$nbFiles = htmlspecialchars($_POST['nbFiles']);
+			$nbVirus = htmlspecialchars($_POST['nbVirus']);
+			$nbErrors = htmlspecialchars($_POST['nbErrors']);
+			$idUsb = htmlspecialchars($_POST['idUsb']);
+
+			if (is_numeric($duration)) {
+				if (is_numeric($nbFiles)) {
+					if (is_numeric($nbVirus)) {
+						if (is_numeric($nbErrors)) {
+							if (is_numeric($idUsb)) {
+								if ($this->_usbManager->getOneUsb($idUsb)) {
+									date_default_timezone_set('Europe/Paris');
+									$this->_scanManager->insertOneScan(array('id' => $this->_scanManager->getMaximumScan() + 1, 'dateScan' => date('Y-m-d H:i:s'), 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'idUsb' => $idUsb));
+
+									$this->_informationMessageCreate = 'The new scan has been correctly created';
+								} else {
+									$this->_errorMessageCreate = 'This ID does not exist';
+									$this->CRUDRouter('scans');
+								}
+							} else {
+								$this->_errorMessageCreate = 'Please enter a valid ID';
+								$this->CRUDRouter('scans');
+							}
+						} else {
+							$this->_errorMessageCreate = 'Please enter a valid number of errors';
+							$this->CRUDRouter('scans');
+						}
+					} else {
+						$this->_errorMessageCreate = 'Please enter a valid number of virus';
+						$this->CRUDRouter('scans');
+					}
+				} else {
+					$this->_errorMessageCreate = 'Please enter a valid number of files';
+					$this->CRUDRouter('scans');
+				}
+			} else {
+				$this->_errorMessageCreate = 'Please enter a valid duration';
+				$this->CRUDRouter('scans');
+			}
+		} else {
+			$this->_errorMessageCreate = 'Please fill in all fields';
+			$this->CRUDRouter('scans');
 		}
 	}
 
@@ -427,13 +500,86 @@ class ControllerCrud {
 		}
 	}
 
+	private function CRUDExecuterScanUpdate() {
+		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
+			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['dateScan']) && !empty($_POST['dateScan'])) && (isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['idUsb']) && !empty($_POST['idUsb']))) {
+				$idNotModified = htmlspecialchars($_POST['idNotModified']);
+				$idModified = htmlspecialchars($_POST['idModified']);
+				$dateScan = htmlspecialchars($_POST['dateScan']);
+				$duration = htmlspecialchars($_POST['duration']);
+				$nbFiles = htmlspecialchars($_POST['nbFiles']);
+				$nbVirus = htmlspecialchars($_POST['nbVirus']);
+				$nbErrors = htmlspecialchars($_POST['nbErrors']);
+				$idUsb = htmlspecialchars($_POST['idUsb']);
+
+				if (is_numeric($idNotModified)) {
+					if (is_numeric($idModified)) {
+						if (preg_match('/^([0-9]{4})-([0-1][0-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/', $dateScan)) {
+							if (is_numeric($idModified)) {
+								if (is_numeric($idModified)) {
+									if (is_numeric($idModified)) {
+										if (is_numeric($idModified)) {
+											if (is_numeric($idModified)) {
+												if (!$this->_scanManager->getOneScan($idModified)) {
+													if ($this->_usbManager->getOneUsb($idUsb)) {
+														$this->_scanManager->updateOneScan($idNotModified, array('id' => $idModified, 'dateScan' => $dateScan, 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'idUsb' => $idUsb));
+
+														$this->_informationMessageOthers = 'The scan has been correctly updated';
+													} else {
+														$this->_errorMessageOthers = 'This USB ID does not exist';
+														$this->CRUDRouter('scans');
+													}
+												} else {
+													$this->_errorMessageOthers = 'This ID is already in use';
+													$this->CRUDRouter('scans');
+												}
+											} else {
+												$this->_errorMessageOthers = 'Please enter a valid USB ID';
+												$this->CRUDRouter('scans');
+											}
+										} else {
+											$this->_errorMessageOthers = 'Please enter a valid number of errors';
+											$this->CRUDRouter('scans');
+										}
+									} else {
+										$this->_errorMessageOthers = 'Please enter a valid number of virus';
+										$this->CRUDRouter('scans');
+									}
+								} else {
+									$this->_errorMessageOthers = 'Please enter a valid number of files';
+									$this->CRUDRouter('scans');
+								}
+							} else {
+								$this->_errorMessageOthers = 'Please enter a valid duration';
+								$this->CRUDRouter('scans');
+							}
+						} else {
+							$this->_errorMessageOthers = 'Please enter a valid date';
+							$this->CRUDRouter('scans');
+						}
+					} else {
+						$this->_errorMessageOthers = 'Please enter a valid ID';
+						$this->CRUDRouter('scans');
+					}
+				} else {
+					$this->_errorMessageOthers = 'An error has occurred';
+					$this->CRUDRouter('scans');
+				}
+			} else {
+				$this->_errorMessageOthers = 'Please fill in all fields';
+				$this->CRUDRouter('scans');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('scans');
+		}
+	}
+
 	private function CRUDExecuterAdminDelete() {
 		if (isset($_POST['id']) && !empty($_POST['id'])) {
 			$id = htmlspecialchars($_POST['id']);
 
-			$admin = $this->_adminManager->getOneAdmin($id);
-
-			if ($admin) {
+			if ($this->_adminManager->getOneAdmin($id)) {
 				$admins = $this->_adminManager->getAllAdmins();
 
 				if (count($admins) > 1) {
@@ -458,9 +604,7 @@ class ControllerCrud {
 		if (isset($_POST['id']) && !empty($_POST['id'])) {
 			$id = htmlspecialchars($_POST['id']);
 
-			$extension = $this->_extensionManager->getOneExtension($id);
-
-			if ($extension) {
+			if ($this->_extensionManager->getOneExtension($id)) {
 				$this->_extensionManager->deleteOneExtension($id);
 
 				$this->_informationMessageOthers = 'The extension has been correctly deleted';
@@ -478,9 +622,7 @@ class ControllerCrud {
 		if (isset($_POST['id']) && !empty($_POST['id'])) {
 			$id = htmlspecialchars(($_POST['id']));
 
-			$employee = $this->_employeeManager->getOneEmployee($id);
-
-			if ($employee) {
+			if ($this->_employeeManager->getOneEmployee($id)) {
 				$this->_employeeManager->deleteOneEmployee($id);
 
 				$this->_informationMessageOthers = 'The employee has been correctly deleted';
@@ -499,13 +641,33 @@ class ControllerCrud {
 			$idNotModified = htmlspecialchars(($_POST['idNotModified']));
 
 			if (is_numeric($idNotModified)) {
-
-				$usb = $this->_usbManager->getOneUsb($idNotModified);
-
-				if ($usb) {
+				if ($this->_usbManager->getOneUsb($idNotModified)) {
 					$this->_usbManager->deleteOneUsb($idNotModified);
 
 					$this->_informationMessageOthers = 'The USB has been correctly deleted';
+				} else {
+					$this->_errorMessageOthers = 'An error has occurred';
+					$this->CRUDRouter('usbs');
+				}
+			} else {
+				$this->_errorMessageOthers = 'An error has occurred';
+				$this->CRUDRouter('usbs');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('usbs');
+		}
+	}
+
+	private function CRUDExecuterScanDelete() {
+		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
+			$idNotModified = htmlspecialchars(($_POST['idNotModified']));
+
+			if (is_numeric($idNotModified)) {
+				if ($this->_scanManager->getOneScan($idNotModified)) {
+					$this->_scanManager->deleteOneScan($idNotModified);
+
+					$this->_informationMessageOthers = 'The scan has been correctly deleted';
 				} else {
 					$this->_errorMessageOthers = 'An error has occurred';
 					$this->CRUDRouter('usbs');
