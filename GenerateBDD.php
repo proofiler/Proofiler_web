@@ -49,9 +49,9 @@ try {
 			nbFiles  MEDIUMINT UNSIGNED NOT NULL,
 			nbVirus  MEDIUMINT UNSIGNED NOT NULL,
 			nbErrors MEDIUMINT UNSIGNED NOT NULL,
-			idUSB    INT UNSIGNED       NOT NULL,
+			idUsb    INT UNSIGNED       NOT NULL,
 			CONSTRAINT SCANS_primary_key PRIMARY KEY (id),
-			CONSTRAINT SCANS_foreign_key FOREIGN KEY (idUSB) REFERENCES USBS(id)  ON UPDATE CASCADE ON DELETE CASCADE
+			CONSTRAINT SCANS_foreign_key FOREIGN KEY (idUsb) REFERENCES USBS(id)  ON UPDATE CASCADE ON DELETE CASCADE
 		);
 		CREATE TABLE VIRUSES (
 			id     MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -78,13 +78,13 @@ try {
 		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('8adb083e-c46e-4e27-bb53-2bb6ee40deaa', 'SanDisk', '2019-12-30 10:57:33', 'alivingston@proofiler.com');
 		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('fd04587f-4477-463c-ba42-e388afda75f4', 'Patriot', '2020-06-18 17:24:13', 'sgray@proofiler.com');
 		INSERT INTO USBS       (uuid, brand, registration, emailEmployee)               VALUES ('3d03ea66-7c32-47c9-981c-556a12d76968', 'KingSton', '2020-11-01 15:30:02', 'sgray@proofiler.com');
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-04-30 12:10:15', 23, 30, 0, 0, 1);
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-09-07 14:28:53', 3, 1, 0, 0, 2);
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-10-09 09:36:18', 7, 5, 1, 0, 1);
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2019-10-09 18:17:35', 89, 74, 4, 1, 2);
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2020-01-29 11:52:26', 376, 52, 0, 18, 3);
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2020-03-14 11:49:45', 134, 18, 6, 4, 1);
-		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUSB) VALUES ('2020-11-22 14:38:13', 32, 4, 0, 0, 5);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2019-04-30 12:10:15', 23, 30, 0, 0, 1);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2019-09-07 14:28:53', 3, 1, 0, 0, 2);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2019-10-09 09:36:18', 7, 5, 1, 0, 1);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2019-10-09 18:17:35', 89, 74, 4, 1, 2);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2020-01-29 11:52:26', 376, 52, 0, 18, 3);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2020-03-14 11:49:45', 134, 18, 6, 4, 1);
+		INSERT INTO SCANS      (dateScan, duration, nbFiles, nbVirus, nbErrors, idUsb) VALUES ('2020-11-22 14:38:13', 32, 4, 0, 0, 5);
 		INSERT INTO VIRUSES    (name, hash, idScan)                                    VALUES ('CryptoLocker', 'b026324c6904b2a9cb4b88d6d61c81d1', 3);
 		INSERT INTO VIRUSES    (name, hash, idScan)                                    VALUES ('CryptoLocker', 'b026324c6904b2a9cb4b88d6d61c81d1', 4);
 		INSERT INTO VIRUSES    (name, hash, idScan)                                    VALUES ('ILOVEYOU', '26ab0db90d72e28ad0ba1e22ee510510', 4);
