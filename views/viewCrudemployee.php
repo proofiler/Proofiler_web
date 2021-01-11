@@ -21,8 +21,8 @@
 				<?php $i = 0; ?>
 				<?php foreach ($employees as $employee): ?>
 					<form action="" method="POST">
-						<input type="hidden" name="id" value="<?= $employee->getEmail() ?>">
-						<label>Email : </label><input type="email" name="email" placeholder="Enter your new email" value="<?= $employee->getEmail() ?>" required /><br>
+						<input type="hidden" name="emailNotModified" value="<?= $employee->getEmail() ?>">
+						<label>Email : </label><input type="email" name="emailModified" placeholder="Enter your new email" value="<?= $employee->getEmail() ?>" required /><br>
 						<label>First name : </label><input type="text" name="firstName" placeholder="Enter your new first name" value="<?= $employee->getFirstName() ?>" required /><br>
 						<label>Last name : </label><input type="text" name="lastName" placeholder="Enter your new last name" value="<?= $employee->getLastName() ?>" required /><br>
 						<button type="submit" name="update">Update</button><button type="submit" name="delete">Delete</button><button type="reset">Reset</button>

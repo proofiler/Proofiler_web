@@ -313,23 +313,63 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterAdminUpdate() {
-		if (isset($_POST['id']) && !empty($_POST['id'])) {
-			if (isset($_POST['email']) && !empty($_POST['email']) && (isset($_POST['oldPassword']) && !empty($_POST['oldPassword']))) {
-				if ((isset($_POST['newPassword']) && !empty($_POST['newPassword'])) || (isset($_POST['confirmPassword']) && !empty($_POST['confirmPassword']))) {
-					if ((isset($_POST['newPassword']) && !empty($_POST['newPassword'])) && (isset($_POST['confirmPassword']) && !empty($_POST['confirmPassword']))) {
-						$id = htmlspecialchars($_POST['id']);
-						$email = htmlspecialchars($_POST['email']);
-						$oldPassword = htmlspecialchars($_POST['oldPassword']);
-						$newPassword = htmlspecialchars($_POST['newPassword']);
-						$passwordConfirmation = htmlspecialchars($_POST['confirmPassword']);
+		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
+			if (filter_var($_POST['emailNotModified'], FILTER_VALIDATE_EMAIL)) {
+				if (isset($_POST['emailModified']) && !empty($_POST['emailModified']) && (isset($_POST['oldPassword']) && !empty($_POST['oldPassword']))) {
+					if ((isset($_POST['newPassword']) && !empty($_POST['newPassword'])) || (isset($_POST['confirmPassword']) && !empty($_POST['confirmPassword']))) {
+						if ((isset($_POST['newPassword']) && !empty($_POST['newPassword'])) && (isset($_POST['confirmPassword']) && !empty($_POST['confirmPassword']))) {
+							$emailNotModified = htmlspecialchars($_POST['emailNotModified']);
+							$emailModified = htmlspecialchars($_POST['emailModified']);
+							$oldPassword = htmlspecialchars($_POST['oldPassword']);
+							$newPassword = htmlspecialchars($_POST['newPassword']);
+							$passwordConfirmation = htmlspecialchars($_POST['confirmPassword']);
 
-						if ($newPassword === $passwordConfirmation) {
-							if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-								$admin = $this->_adminManager->getOneAdmin($id);
+							if ($newPassword === $passwordConfirmation) {
+								if (filter_var($emailModified, FILTER_VALIDATE_EMAIL)) {
+									if (($emailNotModified === $emailModified) || ($emailNotModified !== $emailModified) && !$this->_adminManager->getOneAdmin($emailModified)) {
+										$admin = $this->_adminManager->getOneAdmin($emailNotModified);
+
+										if ($admin) {
+											if (password_verify($oldPassword, $admin->getPassword())) {
+												$this->_adminManager->updateOneAdmin($emailNotModified, array('email' => $emailModified, 'password' => $newPassword));
+
+												$this->_informationMessageOthers = 'The administrator has been correctly updated';
+											} else {
+												$this->_errorMessageOthers = 'Incorrect password';
+												$this->CRUDRouter('admins');
+											}
+										} else {
+											$this->_errorMessageOthers = 'An error has occurred';
+											$this->CRUDRouter('admins');
+										}
+									} else {
+										$this->_errorMessageOthers = 'This email is already in use';
+										$this->CRUDRouter('admins');
+									}
+								} else {
+									$this->_errorMessageOthers = 'Please enter a valid email';
+									$this->CRUDRouter('admins');
+								}
+							} else {
+								$this->_errorMessageOthers = 'New password and password confirmation do not match';
+								$this->CRUDRouter('admins');
+							}
+						} else {
+							$this->_errorMessageOthers = 'Please fill in all fields';
+							$this->CRUDRouter('admins');
+						}
+					} else {
+						$emailNotModified = htmlspecialchars($_POST['emailNotModified']);
+						$emailModified = htmlspecialchars($_POST['emailModified']);
+						$oldPassword = htmlspecialchars($_POST['oldPassword']);
+
+						if (filter_var($_POST['emailModified'], FILTER_VALIDATE_EMAIL)) {
+							if (($emailNotModified === $emailModified) || ($emailNotModified !== $emailModified) && !$this->_adminManager->getOneAdmin($emailModified)) {
+								$admin = $this->_adminManager->getOneAdmin($emailNotModified);
 
 								if ($admin) {
 									if (password_verify($oldPassword, $admin->getPassword())) {
-										$this->_adminManager->updateOneAdmin($id, array('email' => $email, 'password' => $newPassword));
+										$this->_adminManager->updateOneAdmin($emailNotModified, array('email' => $emailModified));
 
 										$this->_informationMessageOthers = 'The administrator has been correctly updated';
 									} else {
@@ -341,45 +381,20 @@ class ControllerCrud {
 									$this->CRUDRouter('admins');
 								}
 							} else {
-								$this->_errorMessageOthers = 'Please enter a valid email';
+								$this->_errorMessageOthers = 'This email is already in use';
 								$this->CRUDRouter('admins');
 							}
 						} else {
-							$this->_errorMessageOthers = 'New password and password confirmation do not match';
+							$this->_errorMessageOthers = 'Please enter a valid email';
 							$this->CRUDRouter('admins');
 						}
-					} else {
-						$this->_errorMessageOthers = 'Please fill in all fields';
-						$this->CRUDRouter('admins');
 					}
 				} else {
-					$id = htmlspecialchars($_POST['id']);
-					$email = htmlspecialchars($_POST['email']);
-					$oldPassword = htmlspecialchars($_POST['oldPassword']);
-
-					if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-						$admin = $this->_adminManager->getOneAdmin($id);
-
-						if ($admin) {
-							if (password_verify($oldPassword, $admin->getPassword())) {
-								$this->_adminManager->updateOneAdmin($id, array('email' => $email));
-
-								$this->_informationMessageOthers = 'The administrator has been correctly updated';
-							} else {
-								$this->_errorMessageOthers = 'Incorrect password';
-								$this->CRUDRouter('admins');
-							}
-						} else {
-							$this->_errorMessageOthers = 'An error has occurred';
-							$this->CRUDRouter('admins');
-						}
-					} else {
-						$this->_errorMessageOthers = 'Please enter a valid email';
-						$this->CRUDRouter('admins');
-					}
+					$this->_errorMessageOthers = 'Please fill in at least the email and the old password fields';
+					$this->CRUDRouter('admins');
 				}
 			} else {
-				$this->_errorMessageOthers = 'Please fill in at least the email and the old password fields';
+				$this->_errorMessageOthers = 'An error has occurred';
 				$this->CRUDRouter('admins');
 			}
 		} else {
@@ -389,19 +404,22 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterExtensionUpdate() {
-		if (isset($_POST['id']) && !empty($_POST['id'])) {
-			if (isset($_POST['name']) && !empty($_POST['name'])) {
-				$id = htmlspecialchars(($_POST['id']));
-				$name = htmlspecialchars($_POST['name']);
+		if (isset($_POST['nameNotModified']) && !empty($_POST['nameNotModified'])) {
+			if (isset($_POST['nameModified']) && !empty($_POST['nameModified'])) {
+				$nameNotModified = htmlspecialchars(($_POST['nameNotModified']));
+				$nameModified = htmlspecialchars($_POST['nameModified']);
 
-				$extension = $this->_extensionManager->getOneExtension($id);
+				if (($nameNotModified === $nameModified) || ($nameNotModified !== $nameModified) && !$this->_extensionManager->getOneExtension($nameModified)) {
+					if ($this->_extensionManager->getOneExtension($nameNotModified)) {
+						$this->_extensionManager->updateOneExtension($nameNotModified, array('name' => $nameModified));
 
-				if ($extension) {
-					$this->_extensionManager->updateOneExtension($id, array('name' => $name));
-
-					$this->_informationMessageOthers = 'The extension has been correctly updated';
+						$this->_informationMessageOthers = 'The extension has been correctly updated';
+					} else {
+						$this->_errorMessageOthers = 'An error has occurred';
+						$this->CRUDRouter('extensions');
+					}
 				} else {
-					$this->_errorMessageOthers = 'An error has occurred';
+					$this->_errorMessageOthers = 'This extension is already in use';
 					$this->CRUDRouter('extensions');
 				}
 			} else {
@@ -415,26 +433,34 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterEmployeeUpdate() {
-		if (isset($_POST['id']) && !empty($_POST['id'])) {
-			if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['firstName']) && !empty($_POST['firstName'])) && (isset($_POST['lastName']) && !empty($_POST['lastName']))) {
-				$id = htmlspecialchars(($_POST['id']));
-				$email = htmlspecialchars($_POST['email']);
+		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
+			if ((isset($_POST['emailModified']) && !empty($_POST['emailModified'])) && (isset($_POST['firstName']) && !empty($_POST['firstName'])) && (isset($_POST['lastName']) && !empty($_POST['lastName']))) {
+				$emailNotModified = htmlspecialchars(($_POST['emailNotModified']));
+				$emailModified = htmlspecialchars($_POST['emailModified']);
 				$firstName = htmlspecialchars($_POST['firstName']);
 				$lastName = htmlspecialchars($_POST['lastName']);
 
-				if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					$employee = $this->_employeeManager->getOneEmployee($id);
+				if (filter_var($emailNotModified, FILTER_VALIDATE_EMAIL)) {
+					if (filter_var($emailModified, FILTER_VALIDATE_EMAIL)) {
+						if (($emailNotModified === $emailModified) || ($emailNotModified !== $emailModified) && !$this->_employeeManager->getOneEmployee($emailModified)) {
+							if ($this->_employeeManager->getOneEmployee($emailNotModified)) {
+								$this->_employeeManager->updateOneEmployee($emailNotModified, array('email' => $emailModified, 'firstName' => $firstName, 'lastName' => $lastName));
 
-					if ($employee) {
-						$this->_employeeManager->updateOneEmployee($id, array('email' => $email, 'firstName' => $firstName, 'lastName' => $lastName));
-
-						$this->_informationMessageOthers = 'The employee has been correctly updated';
+								$this->_informationMessageOthers = 'The employee has been correctly updated';
+							} else {
+								$this->_errorMessageOthers = 'An error has occured';
+								$this->CRUDRouter('employees');
+							}
+						} else {
+							$this->_errorMessageOthers = 'This email is already in use';
+							$this->CRUDRouter('employees');
+						}
 					} else {
-						$this->_errorMessageOthers = 'An error has occured';
+						$this->_errorMessageOthers = 'Please enter a valid email';
 						$this->CRUDRouter('employees');
 					}
 				} else {
-					$this->_errorMessageOthers = 'Please enter a valid email';
+					$this->_errorMessageOthers = 'An error has occurred';
 					$this->CRUDRouter('employees');
 				}
 			} else {
@@ -461,7 +487,7 @@ class ControllerCrud {
 					if (is_numeric($idModified)) {
 						if (preg_match('/^([0-9]{4})-([0-1][0-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/', $registration)) {
 							if (filter_var($emailEmployee, FILTER_VALIDATE_EMAIL)) {
-								if (!$this->_usbManager->getOneUsb($idModified)) {
+								if (($idNotModified === $idModified) || ($idNotModified !== $idModified) && !$this->_usbManager->getOneUsb($idModified)) {
 									if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
 										$this->_usbManager->updateOneUsb($idNotModified, array('id' => $idModified, 'uuid' => $uuid, 'brand' => $brand, 'registration' => $registration, 'emailEmployee' => $emailEmployee));
 
@@ -520,7 +546,7 @@ class ControllerCrud {
 									if (is_numeric($idModified)) {
 										if (is_numeric($idModified)) {
 											if (is_numeric($idModified)) {
-												if (!$this->_scanManager->getOneScan($idModified)) {
+												if (($idNotModified === $idModified) || ($idNotModified !== $idModified) && !$this->_scanManager->getOneScan($idModified)) {
 													if ($this->_usbManager->getOneUsb($idUsb)) {
 														$this->_scanManager->updateOneScan($idNotModified, array('id' => $idModified, 'dateScan' => $dateScan, 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'idUsb' => $idUsb));
 
@@ -576,14 +602,14 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterAdminDelete() {
-		if (isset($_POST['id']) && !empty($_POST['id'])) {
-			$id = htmlspecialchars($_POST['id']);
+		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
+			$emailNotModified = htmlspecialchars($_POST['emailNotModified']);
 
-			if ($this->_adminManager->getOneAdmin($id)) {
+			if ($this->_adminManager->getOneAdmin($emailNotModified)) {
 				$admins = $this->_adminManager->getAllAdmins();
 
 				if (count($admins) > 1) {
-					$this->_adminManager->deleteOneAdmin($id);
+					$this->_adminManager->deleteOneAdmin($emailNotModified);
 
 					$this->_informationMessageOthers = 'The administrator has been correctly deleted';
 				} else {
@@ -601,11 +627,11 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterExtensionDelete() {
-		if (isset($_POST['id']) && !empty($_POST['id'])) {
-			$id = htmlspecialchars($_POST['id']);
+		if (isset($_POST['nameNotModified']) && !empty($_POST['nameNotModified'])) {
+			$nameNotModified = htmlspecialchars($_POST['nameNotModified']);
 
-			if ($this->_extensionManager->getOneExtension($id)) {
-				$this->_extensionManager->deleteOneExtension($id);
+			if ($this->_extensionManager->getOneExtension($nameNotModified)) {
+				$this->_extensionManager->deleteOneExtension($nameNotModified);
 
 				$this->_informationMessageOthers = 'The extension has been correctly deleted';
 			} else {
@@ -619,11 +645,11 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterEmployeeDelete() {
-		if (isset($_POST['id']) && !empty($_POST['id'])) {
-			$id = htmlspecialchars(($_POST['id']));
+		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
+			$emailNotModified = htmlspecialchars(($_POST['emailNotModified']));
 
-			if ($this->_employeeManager->getOneEmployee($id)) {
-				$this->_employeeManager->deleteOneEmployee($id);
+			if ($this->_employeeManager->getOneEmployee($emailNotModified)) {
+				$this->_employeeManager->deleteOneEmployee($emailNotModified);
 
 				$this->_informationMessageOthers = 'The employee has been correctly deleted';
 			} else {
