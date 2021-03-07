@@ -29,4 +29,4 @@ The proofiler website allows you to view statistics on all the analyses performe
 - [x] CRUD employees
 - [x] CRUD USBs
 - [x] CRUD scans
-- [ ] CRUD viruses
+- [x] CRUD viruses
