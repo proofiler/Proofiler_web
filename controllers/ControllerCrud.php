@@ -699,15 +699,14 @@ class ControllerCrud {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
 			$emailNotModified = htmlspecialchars($_POST['emailNotModified']);
 
-			if ($this->_adminManager->getOneAdmin($emailNotModified)) {
-				$admins = $this->_adminManager->getAllAdmins();
-
-				if (count($admins) > 1) {
+			$admin = $this->_adminManager->getOneAdmin($emailNotModified);
+			if ($admin) {
+				if ($admin->getEmail() != 'pr00filer@pr00filer.com') {
 					$this->_adminManager->deleteOneAdmin($emailNotModified);
 
 					$this->_informationMessageOthers = 'The administrator has been correctly deleted';
 				} else {
-					$this->_errorMessageOthers = 'There is only one administrator left so it is impossible to delete it';
+					$this->_errorMessageOthers = 'This administrator cannot be removed';
 					$this->CRUDRouter('admins');
 				}
 			} else {
