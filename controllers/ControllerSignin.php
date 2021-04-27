@@ -20,13 +20,18 @@ class ControllerSignin {
 				$password = htmlspecialchars($_POST['password']);
 
 				if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					$this->_adminManager = new AdminManager();
-					$admin = $this->_adminManager->connect($email, $password);
+					if ($email != 'raspberry@pr00filer.com') {
+						$this->_adminManager = new AdminManager();
+						$admin = $this->_adminManager->connect($email, $password);
 
-					if ($admin) {
-						$this->_adminManager->createSession($admin->getEmail());
-						header('Location: '.URL.'configuration');
-						exit;
+						if ($admin) {
+							$this->_adminManager->createSession($admin->getEmail());
+							header('Location: '.URL.'configuration');
+							exit;
+						} else {
+							$this->_errorMessage = 'Incorrect email and/or password';
+							$this->printForm();
+						}
 					} else {
 						$this->_errorMessage = 'Incorrect email and/or password';
 						$this->printForm();

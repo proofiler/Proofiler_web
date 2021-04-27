@@ -701,7 +701,7 @@ class ControllerCrud {
 
 			$admin = $this->_adminManager->getOneAdmin($emailNotModified);
 			if ($admin) {
-				if ($admin->getEmail() != 'pr00filer@pr00filer.com') {
+				if ($admin->getEmail() != 'raspberry@pr00filer.com' && $admin->getEmail() != 'pr00filer@pr00filer.com') {
 					$this->_adminManager->deleteOneAdmin($emailNotModified);
 
 					$this->_informationMessageOthers = 'The administrator has been correctly deleted';
