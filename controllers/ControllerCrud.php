@@ -221,7 +221,7 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterExtensionAdd() {
-		if (isset($_POST['name']) && !empty($_POST['name'])) {
+		if ((isset($_POST['name']) && ($_POST['name'] === '0' || !empty($_POST['name'])))) {
 			$name = htmlspecialchars($_POST['name']);
 
 			if (!$this->_extensionManager->getOneExtension($name)) {
@@ -239,7 +239,7 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterEmployeeAdd() {
-		if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['firstName']) && !empty($_POST['firstName'])) && (isset($_POST['lastName']) && !empty($_POST['lastName']))) {
+		if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['firstName']) && ($_POST['firstName'] === '0' || !empty($_POST['firstName']))) && (isset($_POST['lastName']) && ($_POST['lastName'] === '0' || !empty($_POST['lastName'])))) {
 			$email = htmlspecialchars($_POST['email']);
 			$firstName = htmlspecialchars($_POST['firstName']);
 			$lastName = htmlspecialchars($_POST['lastName']);
@@ -264,7 +264,7 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterUsbAdd() {
-		if ((isset($_POST['uuid']) && !empty($_POST['uuid'])) && (isset($_POST['brand']) && !empty($_POST['brand'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
+		if ((isset($_POST['uuid']) && ($_POST['uuid'] === '0' || !empty($_POST['uuid']))) && (isset($_POST['brand']) && ($_POST['brand'] === '0' || !empty($_POST['brand']))) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
 			$uuid = htmlspecialchars($_POST['uuid']);
 			$brand = htmlspecialchars($_POST['brand']);
 			$emailEmployee = htmlspecialchars($_POST['emailEmployee']);
@@ -290,7 +290,7 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterScanAdd() {
-		if ((isset($_POST['duration']) && !empty($_POST['duration'])) && (isset($_POST['nbFiles']) && !empty($_POST['nbFiles'])) && (isset($_POST['nbVirus']) && !empty($_POST['nbVirus'])) && (isset($_POST['nbErrors']) && !empty($_POST['nbErrors'])) && (isset($_POST['idUsb']) && !empty($_POST['idUsb']))) {
+		if ((isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['idUsb']) && !empty($_POST['idUsb']))) {
 			$duration = htmlspecialchars($_POST['duration']);
 			$nbFiles = htmlspecialchars($_POST['nbFiles']);
 			$nbVirus = htmlspecialchars($_POST['nbVirus']);
@@ -338,7 +338,7 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterVirusAdd() {
-		if ((isset($_POST['name']) && !empty($_POST['name'])) && (isset($_POST['hash']) && !empty($_POST['hash'])) && (isset($_POST['idScan']) && !empty($_POST['idScan']))) {
+		if ((isset($_POST['name']) && ($_POST['name'] === '0' || !empty($_POST['name']))) && (isset($_POST['hash']) && !empty($_POST['hash'])) && (isset($_POST['idScan']) && !empty($_POST['idScan']))) {
 			$name = htmlspecialchars($_POST['name']);
 			$hash = htmlspecialchars($_POST['hash']);
 			$idScan = htmlspecialchars($_POST['idScan']);
@@ -451,8 +451,8 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterExtensionUpdate() {
-		if (isset($_POST['nameNotModified']) && !empty($_POST['nameNotModified'])) {
-			if (isset($_POST['nameModified']) && !empty($_POST['nameModified'])) {
+		if ((isset($_POST['nameNotModified']) && ($_POST['nameNotModified'] === '0' || !empty($_POST['nameNotModified'])))) {
+			if ((isset($_POST['nameModified']) && ($_POST['nameModified'] === '0' || !empty($_POST['nameModified'])))) {
 				$nameNotModified = htmlspecialchars(($_POST['nameNotModified']));
 				$nameModified = htmlspecialchars($_POST['nameModified']);
 
@@ -481,7 +481,7 @@ class ControllerCrud {
 
 	private function CRUDExecuterEmployeeUpdate() {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
-			if ((isset($_POST['emailModified']) && !empty($_POST['emailModified'])) && (isset($_POST['firstName']) && !empty($_POST['firstName'])) && (isset($_POST['lastName']) && !empty($_POST['lastName']))) {
+			if ((isset($_POST['emailModified']) && !empty($_POST['emailModified'])) && (isset($_POST['firstName']) && ($_POST['firstName'] === '0' || !empty($_POST['firstName']))) && (isset($_POST['lastName']) && ($_POST['lastName'] === '0' || !empty($_POST['lastName'])))) {
 				$emailNotModified = htmlspecialchars(($_POST['emailNotModified']));
 				$emailModified = htmlspecialchars($_POST['emailModified']);
 				$firstName = htmlspecialchars($_POST['firstName']);
@@ -522,7 +522,7 @@ class ControllerCrud {
 
 	private function CRUDExecuterUsbUpdate() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
-			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['uuid']) && !empty($_POST['uuid'])) && (isset($_POST['brand']) && !empty($_POST['brand'])) && (isset($_POST['registration']) && !empty($_POST['registration'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
+			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['uuid']) && ($_POST['uuid'] === '0' || !empty($_POST['uuid']))) && (isset($_POST['brand']) && ($_POST['brand'] === '0' || !empty($_POST['brand']))) && (isset($_POST['registration']) && !empty($_POST['registration'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
 				$idNotModified = htmlspecialchars($_POST['idNotModified']);
 				$idModified = htmlspecialchars($_POST['idModified']);
 				$uuid = htmlspecialchars($_POST['uuid']);
@@ -650,7 +650,7 @@ class ControllerCrud {
 
 	private function CRUDExecuterVirusUpdate() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
-			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['name']) && !empty($_POST['name'])) && (isset($_POST['hash']) && !empty($_POST['hash'])) && (isset($_POST['idScan']) && !empty($_POST['idScan']))) {
+			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['name']) && ($_POST['name'] === '0' || !empty($_POST['name']))) && (isset($_POST['hash']) && !empty($_POST['hash'])) && (isset($_POST['idScan']) && !empty($_POST['idScan']))) {
 				$idNotModified = htmlspecialchars($_POST['idNotModified']);
 				$idModified = htmlspecialchars($_POST['idModified']);
 				$name = htmlspecialchars($_POST['name']);
@@ -720,7 +720,7 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterExtensionDelete() {
-		if (isset($_POST['nameNotModified']) && !empty($_POST['nameNotModified'])) {
+		if ((isset($_POST['nameNotModified']) && ($_POST['nameNotModified'] === '0' || !empty($_POST['nameNotModified'])))) {
 			$nameNotModified = htmlspecialchars($_POST['nameNotModified']);
 
 			if ($this->_extensionManager->getOneExtension($nameNotModified)) {
