@@ -197,17 +197,22 @@ class ControllerCrud {
 			$passwordConfirmation = htmlspecialchars($_POST['confirmPassword']);
 
 			if ($password === $passwordConfirmation) {
-				if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					if (!$this->_adminManager->getOneAdmin($email)) {
-						$this->_adminManager->insertOneAdmin(array('email' => $email, 'password' => $password));
+				if (preg_match('/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z]).{8,20}$/', $password)) {
+					if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+						if (!$this->_adminManager->getOneAdmin($email)) {
+							$this->_adminManager->insertOneAdmin(array('email' => $email, 'password' => $password));
 
-						$this->_informationMessageCreate = 'The new administrator has been correctly created';
+							$this->_informationMessageCreate = 'The new administrator has been correctly created';
+						} else {
+							$this->_errorMessageCreate = 'This email address is already in use';
+							$this-> CRUDRouter('admins');
+						}
 					} else {
-						$this->_errorMessageCreate = 'This email address is already in use';
-						$this-> CRUDRouter('admins');
+						$this->_errorMessageCreate = 'Please enter a valid email';
+						$this->CRUDRouter('admins');
 					}
 				} else {
-					$this->_errorMessageCreate = 'Please enter a valid email';
+					$this->_errorMessageCreate = 'The password must have a minimum length of 8 characters and must be composed of at least one upper case letter one lower case letter one number and one special character';
 					$this->CRUDRouter('admins');
 				}
 			} else {
@@ -372,29 +377,34 @@ class ControllerCrud {
 							$passwordConfirmation = htmlspecialchars($_POST['confirmPassword']);
 
 							if ($newPassword === $passwordConfirmation) {
-								if (filter_var($emailModified, FILTER_VALIDATE_EMAIL)) {
-									if (($emailNotModified === $emailModified) || ($emailNotModified !== $emailModified) && !$this->_adminManager->getOneAdmin($emailModified)) {
-										$admin = $this->_adminManager->getOneAdmin($emailNotModified);
+								if (preg_match('/^(?=.*[!@#$%^&*-])(?=.*[0-9])(?=.*[A-Z]).{8,20}$/', $newPassword)) {
+									if (filter_var($emailModified, FILTER_VALIDATE_EMAIL)) {
+										if (($emailNotModified === $emailModified) || ($emailNotModified !== $emailModified) && !$this->_adminManager->getOneAdmin($emailModified)) {
+											$admin = $this->_adminManager->getOneAdmin($emailNotModified);
 
-										if ($admin) {
-											if (password_verify($oldPassword, $admin->getPassword())) {
-												$this->_adminManager->updateOneAdmin($emailNotModified, array('email' => $emailModified, 'password' => $newPassword));
+											if ($admin) {
+												if (password_verify($oldPassword, $admin->getPassword())) {
+													$this->_adminManager->updateOneAdmin($emailNotModified, array('email' => $emailModified, 'password' => $newPassword));
 
-												$this->_informationMessageOthers = 'The administrator has been correctly updated';
+													$this->_informationMessageOthers = 'The administrator has been correctly updated';
+												} else {
+													$this->_errorMessageOthers = 'Incorrect password';
+													$this->CRUDRouter('admins');
+												}
 											} else {
-												$this->_errorMessageOthers = 'Incorrect password';
+												$this->_errorMessageOthers = 'An error has occurred';
 												$this->CRUDRouter('admins');
 											}
 										} else {
-											$this->_errorMessageOthers = 'An error has occurred';
+											$this->_errorMessageOthers = 'This email is already in use';
 											$this->CRUDRouter('admins');
 										}
 									} else {
-										$this->_errorMessageOthers = 'This email is already in use';
+										$this->_errorMessageOthers = 'Please enter a valid email';
 										$this->CRUDRouter('admins');
 									}
 								} else {
-									$this->_errorMessageOthers = 'Please enter a valid email';
+									$this->_errorMessageOthers = 'The password must have a minimum length of 8 characters and must be composed of at least one upper case letter one lower case letter one number and one special character';
 									$this->CRUDRouter('admins');
 								}
 							} else {
