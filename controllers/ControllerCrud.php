@@ -6,6 +6,7 @@ class ControllerCrud {
 	private $_scanManager;
 	private $_adminManager;
 	private $_virusManager;
+	private $_stationManager;
 	private $_employeeManager;
 	private $_extensionManager;
 	private $_errorMessageCreate = false;
@@ -26,6 +27,7 @@ class ControllerCrud {
 		$this->_scanManager = new ScanManager();
 		$this->_adminManager = new AdminManager();
 		$this->_virusManager = new VirusManager();
+		$this->_stationManager = new StationManager();
 		$this->_employeeManager = new EmployeeManager();
 		$this->_extensionManager = new ExtensionManager();
 		$this->_adminManager->checkSession();
@@ -43,6 +45,9 @@ class ControllerCrud {
 				break;
 			case 'extensions':
 				$this->CRUDRouterExtension();
+				break;
+			case 'stations':
+				$this->CRUDRouterStation();
 				break;
 			case 'employees':
 				$this->CRUDRouterEmployee();
@@ -84,6 +89,19 @@ class ControllerCrud {
 					$this->CRUDExecuterExtensionUpdate();
 				} else if (isset($_POST['delete'])) {
 					$this->CRUDExecuterExtensionDelete();
+				} else {
+					throw new Exception('Page not found');
+				}
+
+				$this->CRUDRouter($aCRUD);
+				break;
+			case 'stations':
+				if (isset($_POST['add'])) {
+					$this->CRUDExecuterStationAdd();
+				} else if (isset($_POST['update'])) {
+					$this->CRUDExecuterStationUpdate();
+				} else if (isset($_POST['delete'])) {
+					$this->CRUDExecuterStationDelete();
 				} else {
 					throw new Exception('Page not found');
 				}
@@ -160,6 +178,13 @@ class ControllerCrud {
 
 		$this->_view = new View('Crudextension');
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'extensions' => $extensions));
+	}
+
+	private function CRUDRouterStation() {
+		$stations = $this->_stationManager->getAllStations();
+
+		$this->_view = new View('Crudstation');
+		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'stations' => $stations));
 	}
 
 	private function CRUDRouterEmployee() {
@@ -240,6 +265,29 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageCreate = 'Please fill in all fields';
 			$this->CRUDRouter('extensions');
+		}
+	}
+
+	private function CRUDExecuterStationAdd() {
+		if ((isset($_POST['ip']) && !empty($_POST['ip']))) {
+			$ip = htmlspecialchars($_POST['ip']);
+
+			if (filter_var($ip, FILTER_VALIDATE_IP)) {
+				if (!$this->_stationManager->getOneStation($ip)) {
+					$this->_stationManager->insertOneStation(array('ip' => $ip, 'hash' => bin2hex(hash('sha256', date('Y-m-d H:i:s').(float)rand() / (float)getrandmax().sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000, mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff))))));
+
+					$this->_informationMessageCreate = 'The new station has been correctly created';
+				} else {
+					$this->_errorMessageCreate = 'This IP is already in use';
+					$this->CRUDRouter('stations');
+				}
+			} else {
+				$this->_errorMessageCreate = 'Please enter a valid IP';
+				$this->CRUDRouter('stations');
+			}
+		} else {
+			$this->_errorMessageCreate = 'Please fill in all fields';
+			$this->CRUDRouter('stations');
 		}
 	}
 
@@ -489,6 +537,51 @@ class ControllerCrud {
 		}
 	}
 
+	private function CRUDExecuterStationUpdate() {
+		if (isset($_POST['ipNotModified']) && !empty($_POST['ipNotModified'])) {
+			if ((isset($_POST['ipModified']) && !empty($_POST['ipModified'])) && (isset($_POST['hash']) && ($_POST['hash'] === '0' || !empty($_POST['hash'])))) {
+				$ipNotModified = htmlspecialchars(($_POST['ipNotModified']));
+				$ipModified = htmlspecialchars($_POST['ipModified']);
+				$hash = htmlspecialchars($_POST['hash']);
+
+				if (filter_var($ipNotModified, FILTER_VALIDATE_IP)) {
+					if (filter_var($ipModified, FILTER_VALIDATE_IP)) {
+						if (($ipNotModified === $ipModified) || ($ipNotModified !== $ipModified) && !$this->_stationManager->getOneStation($ipModified)) {
+							if (!$this->_stationManager->getOneHashStation($hash)) {
+								if ($this->_stationManager->getOneStation($ipNotModified)) {
+									$this->_stationManager->updateOneStation($ipNotModified, array('ip' => $ipModified, 'hash' => $hash));
+
+									$this->_informationMessageOthers = 'The station has been correctly updated';
+								} else {
+									$this->_errorMessageOthers = 'An error has occured';
+									$this->CRUDRouter('stations');
+								}
+							} else {
+								$this->_errorMessageOthers = 'This hash is already in use';
+								$this->CRUDRouter('stations');
+							}
+						} else {
+							$this->_errorMessageOthers = 'This IP is already in use';
+							$this->CRUDRouter('stations');
+						}
+					} else {
+						$this->_errorMessageOthers = 'Please enter a valid IP';
+						$this->CRUDRouter('stations');
+					}
+				} else {
+					$this->_errorMessageOthers = 'An error has occurred';
+					$this->CRUDRouter('stations');
+				}
+			} else {
+				$this->_errorMessageOthers = 'Please fill in all fields';
+				$this->CRUDRouter('stations');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('stations');
+		}
+	}
+
 	private function CRUDExecuterEmployeeUpdate() {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
 			if ((isset($_POST['emailModified']) && !empty($_POST['emailModified'])) && (isset($_POST['firstName']) && ($_POST['firstName'] === '0' || !empty($_POST['firstName']))) && (isset($_POST['lastName']) && ($_POST['lastName'] === '0' || !empty($_POST['lastName'])))) {
@@ -728,6 +821,24 @@ class ControllerCrud {
 		} else {
 			$this->_errorMessageOthers = 'An error has occurred';
 			$this->CRUDRouter('extensions');
+		}
+	}
+
+	private function CRUDExecuterStationDelete() {
+		if (isset($_POST['ipNotModified']) && !empty($_POST['ipNotModified'])) {
+			$ipNotModified = htmlspecialchars(($_POST['ipNotModified']));
+
+			if ($this->_stationManager->getOneStation($ipNotModified)) {
+				$this->_stationManager->deleteOneStation($ipNotModified);
+
+				$this->_informationMessageOthers = 'The station has been correctly deleted';
+			} else {
+				$this->_errorMessageOthers = 'An error has occurred';
+				$this->CRUDRouter('stations');
+			}
+		} else {
+			$this->_errorMessageOthers = 'An error has occurred';
+			$this->CRUDRouter('stations');
 		}
 	}
 
