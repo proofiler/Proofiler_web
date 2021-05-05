@@ -23,9 +23,13 @@ The proofiler website allows you to view statistics on all the analyses performe
 - [x] Login page development
 - [x] Session management
 - [ ] Displaying the USBs flash drives containing the most viruses
-- [ ] Send an email to the admin when a virus is detected
+- [x] Retrieve data from stations
+- [ ] Send configuration to stations
+- [ ] Encrypt exchanges between the server and the stations
+- [ ] Send an email to the admin when a virus is detected (with crontab)
 - [x] CRUD admins
 - [x] CRUD extensions
+- [x] CRUD stations
 - [x] CRUD employees
 - [x] CRUD USBs
 - [x] CRUD scans
