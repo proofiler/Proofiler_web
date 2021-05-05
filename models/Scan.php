@@ -46,7 +46,7 @@ class Scan {
 		$this->_nbErrors = $aNbErrors;
 	}
 
-	public function setIdusb($anIdUsb) {
+	public function setUuidUsb($anIdUsb) {
 		$this->_idUsb = $anIdUsb;
 	}
 
@@ -74,7 +74,7 @@ class Scan {
 		return $this->_nbErrors;
 	}
 
-	public function getIdusb() {
+	public function getUuidUsb() {
 		return $this->_idUsb;
 	}
 }

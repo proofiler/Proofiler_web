@@ -21,9 +21,8 @@
 				<?php $i = 0; ?>
 				<?php foreach ($usbs as $usb): ?>
 					<form action="" method="POST">
-						<input type="hidden" name="idNotModified" value="<?= $usb->getId() ?>">
-						<label>ID : </label><input type="number" name="idModified" placeholder="Enter your new ID" value="<?= $usb->getId() ?>" required /><br>
-						<label>UUID : </label><input type="text" name="uuid" placeholder="Enter your new uuid" value="<?= $usb->getUuid() ?>" required /><br>
+						<input type="hidden" name="uuidNotModified" value="<?= $usb->getUuid() ?>">
+						<label>UUID : </label><input type="text" name="uuidModified" placeholder="Enter your new uuid" value="<?= $usb->getUuid() ?>" required /><br>
 						<label>Brand : </label><input type="text" name="brand" placeholder="Enter your new brand" value="<?= $usb->getBrand() ?>" required /><br>
 						<label>Registration : </label><input type="text" name="registration" placeholder="Enter your new registration" value="<?= $usb->getRegistration() ?>" required /><br>
 						<label>Employee's email : </label><input type="text" name="emailEmployee" placeholder="Enter your new employee's email" value="<?= $usb->getEmailEmployee() ?>" required /><br>

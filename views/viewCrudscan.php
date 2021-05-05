@@ -12,7 +12,7 @@
 				<label>Number of files : </label><input type="number" name="nbFiles" placeholder="Enter your new number of files" required /><br>
 				<label>Number of virus : </label><input type="number" name="nbVirus" placeholder="Enter your new number of virus" required /><br>
 				<label>Number of errors : </label><input type="number" name="nbErrors" placeholder="Enter your new number of errors" required /><br>
-				<label>USB's ID : </label><input type="number" name="idUsb" placeholder="Enter the USB's ID" required /><br>
+				<label>USB's UUID : </label><input type="text" name="uuidUsb" placeholder="Enter the USB's UUID" required /><br>
 				<button type="submit" name="add">Add</button>
 			</fieldset>
 		</form>
@@ -30,7 +30,7 @@
 						<label>Number of files : </label><input type="number" name="nbFiles" placeholder="Enter your new number of files" value="<?= $scan->getNbfiles() ?>" required /><br>
 						<label>Number of virus : </label><input type="number" name="nbVirus" placeholder="Enter your new number of virus" value="<?= $scan->getNbvirus() ?>" required /><br>
 						<label>Number of errors : </label><input type="number" name="nbErrors" placeholder="Enter your new number of errors" value="<?= $scan->getNberros() ?>" required /><br>
-						<label>USB's ID : </label><input type="number" name="idUsb" placeholder="Enter the USB's ID" value="<?= $scan->getIdusb() ?>" required /><br>
+						<label>USB's UUID : </label><input type="text" name="uuidUsb" placeholder="Enter the USB's UUID" value="<?= $scan->getUuidUsb() ?>" required /><br>
 						<button type="submit" name="update">Update</button><button type="submit" name="delete">Delete</button><button type="reset">Reset</button>
 						<?php 
 							if ($i != count($scans) - 1) {

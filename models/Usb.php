@@ -1,7 +1,6 @@
 <?php
 
 class Usb {
-	private $_id;
 	private $_uuid;
 	private $_brand;
 	private $_registration;
@@ -20,10 +19,6 @@ class Usb {
 		}
 	}
 
-	public function setId($anId) {
-		$this->_id = $anId;
-	}
-
 	public function setUuid($anUuid) {
 		$this->_uuid = $anUuid;
 	}
@@ -38,10 +33,6 @@ class Usb {
 
 	private function setEmailemployee($anEmailEmployee) {
 		$this->_emailEmployee = $anEmailEmployee;
-	}
-
-	public function getId() {
-		return $this->_id;
 	}
 
 	public function getUuid() {

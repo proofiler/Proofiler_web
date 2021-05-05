@@ -1,16 +1,13 @@
 <?php
 
 class UsbManager extends Model {
-	public function getMaximumUsb() {
-		return $this->getMaximum('USBS', 'id');
-	}
 
 	public function getAllUsbs() {
 		return $this->selectAll('USBS');
 	}
 
 	public function getOneUsb($anId) {
-		return $this->selectOne('USBS', 'id', $anId);
+		return $this->selectOne('USBS', 'uuid', $anId);
 	}
 
 	public function insertOneUsb($someData) {		
@@ -18,10 +15,10 @@ class UsbManager extends Model {
 	}
 
 	public function updateOneUsb($anAttribut, $someData) {
-		$this->updateOne('USBS', 'id', $anAttribut, $someData);
+		$this->updateOne('USBS', 'uuid', $anAttribut, $someData);
 	}
 
 	public function deleteOneUsb($anId) {
-		$this->deleteOne('USBS', 'id', $anId);
+		$this->deleteOne('USBS', 'uuid', $anId);
 	}
 }

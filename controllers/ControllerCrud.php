@@ -275,13 +275,18 @@ class ControllerCrud {
 			$emailEmployee = htmlspecialchars($_POST['emailEmployee']);
 
 			if (filter_var($emailEmployee, FILTER_VALIDATE_EMAIL)) {
-				if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
-					date_default_timezone_set('Europe/Paris');
-					$this->_usbManager->insertOneUsb(array('id' => $this->_usbManager->getMaximumUsb() + 1, 'uuid' => $uuid, 'brand' => $brand, 'registration' => date('Y-m-d H:i:s'), 'emailEmployee' => $emailEmployee));
+				if (!$this->_usbManager->getOneUsb($uuid)) {
+					if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
+						date_default_timezone_set('Europe/Paris');
+						$this->_usbManager->insertOneUsb(array('uuid' => $uuid, 'brand' => $brand, 'registration' => date('Y-m-d H:i:s'), 'emailEmployee' => $emailEmployee));
 
-					$this->_informationMessageCreate = 'The new USB has been correctly created';
+						$this->_informationMessageCreate = 'The new USB has been correctly created';
+					} else {
+						$this->_errorMessageCreate = 'The email does not exist';
+						$this->CRUDRouter('usbs');
+					}
 				} else {
-					$this->_errorMessageCreate = 'The email does not exist';
+					$this->_errorMessageCreate = 'This UUID is already in use';
 					$this->CRUDRouter('usbs');
 				}
 			} else {
@@ -295,29 +300,24 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterScanAdd() {
-		if ((isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['idUsb']) && !empty($_POST['idUsb']))) {
+		if ((isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['uuidUsb']) && ($_POST['uuidUsb'] === '0' || !empty($_POST['uuidUsb'])))) {
 			$duration = htmlspecialchars($_POST['duration']);
 			$nbFiles = htmlspecialchars($_POST['nbFiles']);
 			$nbVirus = htmlspecialchars($_POST['nbVirus']);
 			$nbErrors = htmlspecialchars($_POST['nbErrors']);
-			$idUsb = htmlspecialchars($_POST['idUsb']);
+			$uuidUsb = htmlspecialchars($_POST['uuidUsb']);
 
 			if (is_numeric($duration)) {
 				if (is_numeric($nbFiles)) {
 					if (is_numeric($nbVirus)) {
 						if (is_numeric($nbErrors)) {
-							if (is_numeric($idUsb)) {
-								if ($this->_usbManager->getOneUsb($idUsb)) {
-									date_default_timezone_set('Europe/Paris');
-									$this->_scanManager->insertOneScan(array('id' => $this->_scanManager->getMaximumScan() + 1, 'dateScan' => date('Y-m-d H:i:s'), 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'idUsb' => $idUsb));
+							if ($this->_usbManager->getOneUsb($uuidUsb)) {
+								date_default_timezone_set('Europe/Paris');
+								$this->_scanManager->insertOneScan(array('id' => $this->_scanManager->getMaximumScan() + 1, 'dateScan' => date('Y-m-d H:i:s'), 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'uuidUsb' => $uuidUsb));
 
-									$this->_informationMessageCreate = 'The new scan has been correctly created';
-								} else {
-									$this->_errorMessageCreate = 'This ID does not exist';
-									$this->CRUDRouter('scans');
-								}
+								$this->_informationMessageCreate = 'The new scan has been correctly created';
 							} else {
-								$this->_errorMessageCreate = 'Please enter a valid ID';
+								$this->_errorMessageCreate = 'This ID does not exist';
 								$this->CRUDRouter('scans');
 							}
 						} else {
@@ -531,46 +531,35 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterUsbUpdate() {
-		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
-			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['uuid']) && ($_POST['uuid'] === '0' || !empty($_POST['uuid']))) && (isset($_POST['brand']) && ($_POST['brand'] === '0' || !empty($_POST['brand']))) && (isset($_POST['registration']) && !empty($_POST['registration'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
-				$idNotModified = htmlspecialchars($_POST['idNotModified']);
-				$idModified = htmlspecialchars($_POST['idModified']);
-				$uuid = htmlspecialchars($_POST['uuid']);
+		if ((isset($_POST['uuidNotModified']) && ($_POST['uuidNotModified'] === '0' || !empty($_POST['uuidNotModified'])))) {
+			if ((isset($_POST['uuidModified']) && ($_POST['uuidModified'] === '0' || !empty($_POST['uuidModified']))) && (isset($_POST['brand']) && ($_POST['brand'] === '0' || !empty($_POST['brand']))) && (isset($_POST['registration']) && !empty($_POST['registration'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
+				$uuidNotModified = htmlspecialchars($_POST['uuidNotModified']);
+				$uuidModified = htmlspecialchars($_POST['uuidModified']);
 				$brand = htmlspecialchars($_POST['brand']);
 				$registration = htmlspecialchars($_POST['registration']);
 				$emailEmployee = htmlspecialchars($_POST['emailEmployee']);
 
-				if (is_numeric($idNotModified)) {
-					if (is_numeric($idModified)) {
-						if (preg_match('/^([0-9]{4})-([0-1][0-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/', $registration)) {
-							if (filter_var($emailEmployee, FILTER_VALIDATE_EMAIL)) {
-								if (($idNotModified === $idModified) || ($idNotModified !== $idModified) && !$this->_usbManager->getOneUsb($idModified)) {
-									if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
-										$this->_usbManager->updateOneUsb($idNotModified, array('id' => $idModified, 'uuid' => $uuid, 'brand' => $brand, 'registration' => $registration, 'emailEmployee' => $emailEmployee));
+				if (preg_match('/^([0-9]{4})-([0-1][0-9])-([0-3][0-9]) ([0-2][0-9]):([0-5][0-9]):([0-5][0-9])$/', $registration)) {
+					if (filter_var($emailEmployee, FILTER_VALIDATE_EMAIL)) {
+						if (($uuidNotModified === $uuidModified) || ($uuidNotModified !== $uuidModified) && !$this->_usbManager->getOneUsb($uuidModified)) {
+							if ($this->_employeeManager->getOneEmployee($emailEmployee)) {
+								$this->_usbManager->updateOneUsb($uuidNotModified, array('uuid' => $uuidModified, 'brand' => $brand, 'registration' => $registration, 'emailEmployee' => $emailEmployee));
 
-										$this->_informationMessageOthers = 'The USB has been correctly updated';
-									} else {
-										$this->_errorMessageOthers = 'The email does not exist';
-										$this->CRUDRouter('usbs');
-									}
-								} else {
-									$this->_errorMessageOthers = 'This ID is already in use';
-									$this->CRUDRouter('usbs');
-								}
+								$this->_informationMessageOthers = 'The USB has been correctly updated';
 							} else {
-								$this->_errorMessageOthers = 'Please enter a valid email';
+								$this->_errorMessageOthers = 'The email does not exist';
 								$this->CRUDRouter('usbs');
 							}
 						} else {
-							$this->_errorMessageOthers = 'Please enter a valid date';
+							$this->_errorMessageOthers = 'This ID is already in use';
 							$this->CRUDRouter('usbs');
 						}
 					} else {
-						$this->_errorMessageOthers = 'Please enter a valid ID';
+						$this->_errorMessageOthers = 'Please enter a valid email';
 						$this->CRUDRouter('usbs');
 					}
 				} else {
-					$this->_errorMessageOthers = 'An error has occurred';
+					$this->_errorMessageOthers = 'Please enter a valid date';
 					$this->CRUDRouter('usbs');
 				}
 			} else {
@@ -585,7 +574,7 @@ class ControllerCrud {
 
 	private function CRUDExecuterScanUpdate() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
-			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['dateScan']) && !empty($_POST['dateScan'])) && (isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['idUsb']) && !empty($_POST['idUsb']))) {
+			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['dateScan']) && !empty($_POST['dateScan'])) && (isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['uuidUsb']) && ($_POST['uuidUsb'] === '0' || !empty($_POST['uuidUsb'])))) {
 				$idNotModified = htmlspecialchars($_POST['idNotModified']);
 				$idModified = htmlspecialchars($_POST['idModified']);
 				$dateScan = htmlspecialchars($_POST['dateScan']);
@@ -593,7 +582,7 @@ class ControllerCrud {
 				$nbFiles = htmlspecialchars($_POST['nbFiles']);
 				$nbVirus = htmlspecialchars($_POST['nbVirus']);
 				$nbErrors = htmlspecialchars($_POST['nbErrors']);
-				$idUsb = htmlspecialchars($_POST['idUsb']);
+				$uuidUsb = htmlspecialchars($_POST['uuidUsb']);
 
 				if (is_numeric($idNotModified)) {
 					if (is_numeric($idModified)) {
@@ -602,22 +591,17 @@ class ControllerCrud {
 								if (is_numeric($nbFiles)) {
 									if (is_numeric($nbVirus)) {
 										if (is_numeric($nbErrors)) {
-											if (is_numeric($idUsb)) {
-												if (($idNotModified === $idModified) || ($idNotModified !== $idModified) && !$this->_scanManager->getOneScan($idModified)) {
-													if ($this->_usbManager->getOneUsb($idUsb)) {
-														$this->_scanManager->updateOneScan($idNotModified, array('id' => $idModified, 'dateScan' => $dateScan, 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'idUsb' => $idUsb));
+											if (($idNotModified === $idModified) || ($idNotModified !== $idModified) && !$this->_scanManager->getOneScan($idModified)) {
+												if ($this->_usbManager->getOneUsb($uuidUsb)) {
+													$this->_scanManager->updateOneScan($idNotModified, array('id' => $idModified, 'dateScan' => $dateScan, 'duration' => $duration, 'nbFiles' => $nbFiles, 'nbVirus' => $nbVirus, 'nbErrors' => $nbErrors, 'uuidUsb' => $uuidUsb));
 
-														$this->_informationMessageOthers = 'The scan has been correctly updated';
-													} else {
-														$this->_errorMessageOthers = 'This USB ID does not exist';
-														$this->CRUDRouter('scans');
-													}
+													$this->_informationMessageOthers = 'The scan has been correctly updated';
 												} else {
-													$this->_errorMessageOthers = 'This ID is already in use';
+													$this->_errorMessageOthers = 'This USB UUID does not exist';
 													$this->CRUDRouter('scans');
 												}
 											} else {
-												$this->_errorMessageOthers = 'Please enter a valid USB ID';
+												$this->_errorMessageOthers = 'This ID is already in use';
 												$this->CRUDRouter('scans');
 											}
 										} else {
@@ -766,18 +750,13 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterUsbDelete() {
-		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
-			$idNotModified = htmlspecialchars(($_POST['idNotModified']));
+		if ((isset($_POST['uuidNotModified']) && ($_POST['uuidNotModified'] === '0' || !empty($_POST['uuidNotModified'])))) {
+			$uuidNotModified = htmlspecialchars(($_POST['uuidNotModified']));
 
-			if (is_numeric($idNotModified)) {
-				if ($this->_usbManager->getOneUsb($idNotModified)) {
-					$this->_usbManager->deleteOneUsb($idNotModified);
+			if ($this->_usbManager->getOneUsb($uuidNotModified)) {
+				$this->_usbManager->deleteOneUsb($uuidNotModified);
 
-					$this->_informationMessageOthers = 'The USB has been correctly deleted';
-				} else {
-					$this->_errorMessageOthers = 'An error has occurred';
-					$this->CRUDRouter('usbs');
-				}
+				$this->_informationMessageOthers = 'The USB has been correctly deleted';
 			} else {
 				$this->_errorMessageOthers = 'An error has occurred';
 				$this->CRUDRouter('usbs');
