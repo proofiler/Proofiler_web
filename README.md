@@ -26,7 +26,7 @@ The proofiler website allows you to view statistics on all the analyses performe
 - [x] Retrieve data from stations
 - [ ] Send configuration to stations
 - [ ] Encrypt exchanges between the server and the stations
-- [ ] Send an email to the admin when a virus is detected (with crontab)
+- [x] Send an email to pr00filer@localhost every hour to report detected virus (with crontab)
 - [x] CRUD admins
 - [x] CRUD extensions
 - [x] CRUD stations
