@@ -50,7 +50,7 @@ if ($someDataScans) {
 
 
 $to_email = 'pr00filer@localhost';
-$subject = 'Virus reporting : '.date("d-m-Y H:i:s");
+$subject = 'Virus reporting : '.date("d/m/Y H:i:s");
 $headers = 'From: root@localhost';
 
 mail($to_email, $subject, $message, $headers);

@@ -538,18 +538,20 @@ class ControllerCrud {
 	}
 
 	private function CRUDExecuterStationUpdate() {
-		if (isset($_POST['ipNotModified']) && !empty($_POST['ipNotModified'])) {
-			if ((isset($_POST['ipModified']) && !empty($_POST['ipModified'])) && (isset($_POST['hash']) && ($_POST['hash'] === '0' || !empty($_POST['hash'])))) {
+		if (isset($_POST['ipNotModified']) && !empty($_POST['ipNotModified']) && (isset($_POST['hashNotModified']) && !empty($_POST['hashNotModified']))) {
+			if ((isset($_POST['ipModified']) && !empty($_POST['ipModified'])) && (isset($_POST['hashModified']) && ($_POST['hashModified'] === '0' || !empty($_POST['hashModified'])))) {
 				$ipNotModified = htmlspecialchars(($_POST['ipNotModified']));
+				$hashNotModified = htmlspecialchars($_POST['hashNotModified']);
 				$ipModified = htmlspecialchars($_POST['ipModified']);
+				$hashModified = htmlspecialchars($_POST['hashModified']);
 				$hash = htmlspecialchars($_POST['hash']);
 
 				if (filter_var($ipNotModified, FILTER_VALIDATE_IP)) {
 					if (filter_var($ipModified, FILTER_VALIDATE_IP)) {
 						if (($ipNotModified === $ipModified) || ($ipNotModified !== $ipModified) && !$this->_stationManager->getOneStation($ipModified)) {
-							if (!$this->_stationManager->getOneHashStation($hash)) {
+							if (($hashNotModified === $hashModified) || ($hashNotModified !== $hashModified) && !$this->_stationManager->getOneHashStation($hashModified)) {
 								if ($this->_stationManager->getOneStation($ipNotModified)) {
-									$this->_stationManager->updateOneStation($ipNotModified, array('ip' => $ipModified, 'hash' => $hash));
+									$this->_stationManager->updateOneStation($ipNotModified, array('ip' => $ipModified, 'hash' => $hashModified));
 
 									$this->_informationMessageOthers = 'The station has been correctly updated';
 								} else {
