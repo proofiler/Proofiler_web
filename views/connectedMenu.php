@@ -1,7 +1,7 @@
 <nav>
 	<ul>
 		<li><a href="<?= URL ?>">Home</a></li>
-		<li><a href="<?= URL.'configuration' ?>">Configuration</a></li>
+		<li><a href="<?= URL.'gestion' ?>">Gestion</a></li>
 		<li><a href="#">CRUDs</a></li>
 		<ul>
 			<li><a href="<?= URL.'crud/admins' ?>">CRUD Admins</a></li>

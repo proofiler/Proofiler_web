@@ -26,7 +26,7 @@ class ControllerSignin {
 
 						if ($admin) {
 							$this->_adminManager->createSession($admin->getEmail());
-							header('Location: '.URL.'configuration');
+							header('Location: '.URL.'gestion');
 							exit;
 						} else {
 							$this->_errorMessage = 'Incorrect email and/or password';
