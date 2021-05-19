@@ -46,7 +46,7 @@ foreach ($stations as $station) {
 	$data = '{"hash": "'.$station['hash'].'", "ip": "'.$ip.'", '.$data;
 
 	$request = curl_init();
-	curl_setopt($request, CURLOPT_URL,'http://'.$station['ip'].':8000');
+	curl_setopt($request, CURLOPT_URL,'http://'.$station['ip'].':32777');
 	curl_setopt($request, CURLOPT_POST, 1);
 	curl_setopt($request, CURLOPT_POSTFIELDS, 'data='.base64_encode($data));
 	curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
