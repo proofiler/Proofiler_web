@@ -108,4 +108,19 @@ class Model {
 
 		return $result;
 	}
+
+	protected function usbsWithMostViruses() {
+		$result = [];
+
+		$request = $this->getBDD()->prepare('SELECT SUM(nbVirus) AS nbVirusSum, uuidUsb, emailEmployee FROM SCANS INNER JOIN USBS ON SCANS.uuidUsb = USBS.uuid GROUP BY uuidUsb LIMIT 3');
+		$request->execute();
+
+		while($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result[] = $data;
+		}
+
+		$request->closeCursor();
+
+		return $result;
+	}
 }

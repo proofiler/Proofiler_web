@@ -9,11 +9,11 @@
 		<header>
 			<?= $menu ?>
 		</header>
-		<section>
+		<section class="mt-5 py-5">
 			<?= $content ?>
 		</section>
-		<footer>
-			<p>Pr00filer | 2020 - <?= date('Y') ?></p>
+		<footer class="fixed-bottom py-1 text-light bg-secondary text-center font-weight-bold">
+			<p class="my-1">© Pr00filer | 2020 - <?= date('Y') ?></p>
 		</footer>
 		<script src="/Proofiler_web/vendor/jquery/jquery.min.js"></script>
 		<script src="/Proofiler_web/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

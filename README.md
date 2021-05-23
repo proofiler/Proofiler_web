@@ -22,9 +22,9 @@ The proofiler website allows you to view statistics on all the analyses performe
 
 - [x] Login page development
 - [x] Session management
-- [ ] Displaying the USBs flash drives containing the most viruses
+- [x] Displaying the USBs flash drives containing the most viruses
 - [x] Retrieve data from stations
-- [ ] Send configuration to stations
+- [x] Send configuration to stations
 - [ ] Encrypt exchanges between the server and the stations
 - [x] Send an email to pr00filer@localhost every hour to report detected virus (with crontab)
 - [x] CRUD admins

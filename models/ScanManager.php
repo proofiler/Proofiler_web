@@ -24,4 +24,8 @@ class ScanManager extends Model {
 	public function deleteOneScan($anId) {
 		$this->deleteOne('SCANS', 'id', $anId);
 	}
+
+	public function usbsWithMostViruses() {
+		return parent::usbsWithMostViruses();
+	}
 }

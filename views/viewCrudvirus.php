@@ -100,13 +100,13 @@
 				</div>
 			</div>
 			<div class="row justify-content-lg-center justify-content-md-center mb-5">
-				<div class="col-lg-1 col-md-1">
+				<div class="col-lg-2 col-md-2">
 					<button class="btn btn-block btn-warning" type="submit" name="update">Update</button>
 				</div>
-				<div class="col-lg-1 col-md-1">
+				<div class="col-lg-2 col-md-2">
 					<button class="btn btn-block btn-danger" type="submit" name="delete">Delete</button>
 				</div>
-				<div class="col-lg-1 col-md-1">
+				<div class="col-lg-2 col-md-2">
 					<button class="btn btn-block btn-secondary" type="reset">Reset</button>
 				</div>
 			</div>

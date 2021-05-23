@@ -1,14 +1,59 @@
 <?php $this->_title = 'Gestion'; ?>
 
 <section>
-	<h3>Dashboarding</h3>
-	<h3>Configuration</h3>
+	<div class="row text-center justify-content-lg-center justify-content-md-center mb-5">
+		<div class="col-lg-6 col-md-6">
+			<h1>DASHBOARDING</h1>
+			<hr>
+		</div>
+	</div>
+	<div class="row text-center justify-content-lg-center justify-content-md-center mb-3">
+		<div class="col-lg-6 col-md-6">
+			<h3>USB keys with the most viruses</h3>
+			<hr>
+		</div>
+	</div>
+	<div class="row text-center justify-content-lg-center justify-content-md-center mb-5">
+		<table class="col-lg-11 col-md-11 table table-bordered table-striped">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">UUID USB</th>
+					<th scope="col">Number of viruses</th>
+					<th scope="col">USB key owner</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($stats as $stat): ?>
+					<tr>
+						<td scope="row"><?= $stat['uuidUsb']; ?></td>
+						<td><?= $stat['nbVirusSum']; ?></td>
+						<td><?= $stat['emailEmployee'] ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+</section>
+<section class="py-5 bg-light">
+	<div class="row text-center justify-content-lg-center justify-content-md-center mb-5">
+		<div class="col-lg-6 col-md-6">
+			<h1>CONFIGURATION</h1>
+			<hr>
+		</div>
+	</div>
 	<?php
 		if ($informationMessage) {
 			echo $informationMessage;
 		}
 	?>
 	<form action="" method="POST">
-		<button type="submit" name="viruses">Send viruses report email</button><button type="submit" name="configuration">Send configuration data to Raspberry</button>
+		<div class="row justify-content-lg-center justify-content-md-center mb-5">
+			<div class="col-lg-4 col-md-4">
+				<button class="btn btn-block btn-info" type="submit" name="viruses">Send viruses report email</button>
+			</div>
+			<div class="col-lg-4 col-md-4">
+				<button class="btn btn-block btn-info" type="submit" name="configuration">Send configuration data to Raspberry</button>
+			</div>
+		</div>
 	</form>
 </section>
