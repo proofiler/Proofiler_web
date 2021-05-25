@@ -19,7 +19,7 @@
 				</div>
 				<div class="row justify-content-lg-center justify-content-md-center mt-5">
 					<div class="col-lg-4 col-md-4">
-						<button class="btn btn-block btn-primary" type="submit" name="signin">Sign in</button>
+						<button class="btn btn-block btn-success" type="submit" name="signin">Sign in</button>
 					</div>
 					<div class="col-lg-4 col-md-4">
 						<button class="btn btn-block btn-secondary" type="reset">Reset</button>
