@@ -39,13 +39,15 @@
 		<div class="col-lg-6 col-md-6">
 			<h1>CONFIGURATION</h1>
 			<hr>
+		<?php
+			if ($informationMessage) {
+				echo '<div class="alert alert-success" role="alert">';
+				echo $informationMessage;
+				echo '</div>';
+			}
+		?>
 		</div>
 	</div>
-	<?php
-		if ($informationMessage) {
-			echo $informationMessage;
-		}
-	?>
 	<form action="" method="POST">
 		<div class="row justify-content-lg-center justify-content-md-center mb-5">
 			<div class="col-lg-4 col-md-4">

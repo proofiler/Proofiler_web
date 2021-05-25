@@ -1,5 +1,16 @@
 <?php
 
+function my_encrypt($data, $passphrase='5cd10f8a394a241beae003415a1b4569672696468c5aec18f880d1eb2043ad0c') {
+	$secret_key = hex2bin($passphrase);
+	$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+	$encrypted_64 = openssl_encrypt($data, 'aes-256-cbc', $secret_key, 0, $iv);
+	$iv_64 = base64_encode($iv);
+	$json = new stdClass();
+	$json->iv = $iv_64;
+	$json->data = $encrypted_64;
+	return base64_encode(json_encode($json));
+}
+
 $viruses = [];
 $stations = [];
 $extensions = [];
@@ -48,7 +59,7 @@ foreach ($stations as $station) {
 	$request = curl_init();
 	curl_setopt($request, CURLOPT_URL,'http://'.$station['ip'].':32777');
 	curl_setopt($request, CURLOPT_POST, 1);
-	curl_setopt($request, CURLOPT_POSTFIELDS, 'data='.base64_encode($data));
+	curl_setopt($request, CURLOPT_POSTFIELDS, 'data='.my_encrypt($data));
 	curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 	curl_exec($request);
 	curl_close ($request);

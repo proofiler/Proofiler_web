@@ -15,7 +15,8 @@ class ControllerData {
 	}
 
 	private function main($someData) {
-		$data = json_decode(base64_decode($someData));
+		$data = $this->my_decrypt($someData);
+		$data = json_decode(base64_decode($data));
 
 		if ((isset($data->login) && !empty($data->login)) && (isset($data->hash) && !empty($data->hash)) && (isset($data->duration) && ($data->duration === 0 || !empty($data->duration))) && (isset($data->nbFiles) && ($data->nbFiles === 0 || !empty($data->nbFiles))) && (isset($data->nbVirus) && ($data->nbVirus === 0 || !empty($data->nbVirus))) && (isset($data->nbErrors) && ($data->nbErrors === 0 || !empty($data->nbErrors))) && (isset($data->uuidUsb) && ($data->uuidUsb === '0' || !empty($data->uuidUsb)))) {
 			$login = htmlspecialchars($data->login);
@@ -68,5 +69,15 @@ class ControllerData {
 				}
 			}
 		}
+	}
+
+	private function my_decrypt($data, $passphrase='5cd10f8a394a241beae003415a1b4569672696468c5aec18f880d1eb2043ad0c') {
+		$secret_key = hex2bin($passphrase);
+		$json = json_decode(base64_decode($data));
+		$iv = base64_decode($json->{'iv'});
+		$encrypted_64 = $json->{'data'};
+		$data_encrypted = base64_decode($encrypted_64);
+		$decrypted = openssl_decrypt($data_encrypted, 'aes-256-cbc', $secret_key, OPENSSL_RAW_DATA, $iv);
+		return $decrypted;
 	}
 }
