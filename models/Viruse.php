@@ -50,4 +50,5 @@ class Viruse {
 	public function getIdScan() {
 		return $this->_idScan;
 	}
+
 }

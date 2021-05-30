@@ -24,4 +24,23 @@ class VirusManager extends Model {
 	public function deleteOneVirus($anId) {
 		$this->deleteOne('VIRUSES', 'id', $anId);
 	}
+
+	public function getCountVirus() {
+		return $this->getCount('VIRUSES', 'name');
+	}
+
+	public function getCountVirusBy() {
+		return $this->getCountBy('VIRUSES', 'name');
+	}
+
+	public function getCountVirusId() {
+		return $this->getCount('VIRUSES', 'id');
+	}
+
+	public function getVirusMonth() {
+		return $this->getVirusPerMonth();
+	}
+
+
+
 }

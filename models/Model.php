@@ -109,10 +109,32 @@ class Model {
 		return $result;
 	}
 
+<<<<<<< HEAD
+	protected function getCount($aTable, $anAttribut) {
+		$result = 0;
+
+		$request = $this->getBDD()->prepare('SELECT COUNT('.$anAttribut.') AS '.$anAttribut.' FROM '.$aTable);
+		$request->execute();
+
+		if ($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result = $data[$anAttribut];
+		}
+
+		$request->closeCursor();
+
+		return $result;
+	}
+
+	protected function getCountBy($aTable, $anAttribut) {
+		$result = [];
+
+		$request = $this->getBDD()->prepare('SELECT COUNT('.$anAttribut.') AS CB,'.$anAttribut.' AS '.$anAttribut.' FROM '.$aTable.' GROUP BY '.$anAttribut.' ORDER BY CB DESC LIMIT 10');
+=======
 	protected function usbsWithMostViruses() {
 		$result = [];
 
 		$request = $this->getBDD()->prepare('SELECT SUM(nbVirus) AS nbVirusSum, uuidUsb, emailEmployee FROM SCANS INNER JOIN USBS ON SCANS.uuidUsb = USBS.uuid GROUP BY uuidUsb LIMIT 3');
+>>>>>>> 2abe0c628ea9bc5f001d1156fa5abb68046065f1
 		$request->execute();
 
 		while($data = $request->fetch(PDO::FETCH_ASSOC)) {
@@ -123,4 +145,40 @@ class Model {
 
 		return $result;
 	}
+<<<<<<< HEAD
+
+	protected function getSum($aTable, $anAttribut) {
+		$result = 0;
+
+		$request = $this->getBDD()->prepare('SELECT SUM('.$anAttribut.') AS '.$anAttribut.' FROM '.$aTable);
+		$request->execute();
+
+		if ($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result = $data[$anAttribut];
+		}
+
+		$request->closeCursor();
+
+		return $result;
+	}
+
+	protected function getVirusPerMonth(){
+		
+		$result = 0;
+
+		$request = $this->getBDD()->prepare('SELECT ROUND(AVG(result.average),1) AS RES FROM (SELECT YEAR(dateScan) AS year_averageViruses, MONTH(dateScan) AS month_averageViruses, ROUND(AVG(nbVirus), 0) AS average FROM SCANS GROUP BY MONTH(dateScan), YEAR(dateScan)) result');
+		$request->execute();
+
+		if ($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result = $data;
+		}
+
+		$request->closeCursor();
+
+		return $result;
+	}
+
+
+=======
+>>>>>>> 2abe0c628ea9bc5f001d1156fa5abb68046065f1
 }

@@ -25,7 +25,20 @@ class ScanManager extends Model {
 		$this->deleteOne('SCANS', 'id', $anId);
 	}
 
+<<<<<<< HEAD
+	public function getCountScan() {
+		return $this->getCount('SCANS', 'id');
+	}
+
+	public function getSumFile() {
+		return $this->getSum('SCANS', 'nbFiles');
+	}
+
+	public function getSumDuration(){
+		return $this->getSum('SCANS','duration');
+=======
 	public function usbsWithMostViruses() {
 		return parent::usbsWithMostViruses();
+>>>>>>> 2abe0c628ea9bc5f001d1156fa5abb68046065f1
 	}
 }
