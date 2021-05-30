@@ -109,7 +109,6 @@ class Model {
 		return $result;
 	}
 
-<<<<<<< HEAD
 	protected function getCount($aTable, $anAttribut) {
 		$result = 0;
 
@@ -129,12 +128,22 @@ class Model {
 		$result = [];
 
 		$request = $this->getBDD()->prepare('SELECT COUNT('.$anAttribut.') AS CB,'.$anAttribut.' AS '.$anAttribut.' FROM '.$aTable.' GROUP BY '.$anAttribut.' ORDER BY CB DESC LIMIT 10');
-=======
+		$request->execute();
+
+		while($data = $request->fetch(PDO::FETCH_ASSOC)) {
+			$result[] = $data;
+		}
+
+		$request->closeCursor();
+
+		return $result;
+
+	}
+
 	protected function usbsWithMostViruses() {
 		$result = [];
 
 		$request = $this->getBDD()->prepare('SELECT SUM(nbVirus) AS nbVirusSum, uuidUsb, emailEmployee FROM SCANS INNER JOIN USBS ON SCANS.uuidUsb = USBS.uuid GROUP BY uuidUsb LIMIT 3');
->>>>>>> 2abe0c628ea9bc5f001d1156fa5abb68046065f1
 		$request->execute();
 
 		while($data = $request->fetch(PDO::FETCH_ASSOC)) {
@@ -145,7 +154,6 @@ class Model {
 
 		return $result;
 	}
-<<<<<<< HEAD
 
 	protected function getSum($aTable, $anAttribut) {
 		$result = 0;
@@ -179,6 +187,4 @@ class Model {
 	}
 
 
-=======
->>>>>>> 2abe0c628ea9bc5f001d1156fa5abb68046065f1
 }
