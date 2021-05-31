@@ -17,7 +17,6 @@ class ControllerLogout {
 		$_SESSION = array();
 		session_destroy();
 
-		$this->_view = new View('Logout');
-		$this->_view->generate(array());
+		header('Location: '.URL);
 	}
 }

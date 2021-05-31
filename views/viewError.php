@@ -1,3 +1,3 @@
-<?php $this->_title = 'Error'; ?>
+<?php $this->_title = 'ERROR'; ?>
 
 <?= $errorMessage; ?>

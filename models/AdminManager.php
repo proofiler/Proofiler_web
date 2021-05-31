@@ -79,7 +79,7 @@ class AdminManager extends Model {
 				unset($_COOKIE[SESSION_NAME]);
 				$_SESSION = array();
 				session_destroy();
-				header('Location: '.URL.'Signin');
+				header('Location: '.URL.'signin');
 				exit();
 			}
 		}

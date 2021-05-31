@@ -25,7 +25,6 @@ class ScanManager extends Model {
 		$this->deleteOne('SCANS', 'id', $anId);
 	}
 
-
 	public function getCountScan() {
 		return $this->getCount('SCANS', 'id');
 	}

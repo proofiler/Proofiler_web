@@ -37,10 +37,7 @@ class VirusManager extends Model {
 		return $this->getCount('VIRUSES', 'id');
 	}
 
-	public function getVirusMonth() {
-		return $this->getVirusPerMonth();
+	public function getVirusPerMonth() {
+		return parent::getVirusPerMonth();
 	}
-
-
-
 }

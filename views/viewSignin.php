@@ -1,4 +1,4 @@
-<?php $this->_title = 'Sign in'; ?>
+<?php $this->_title = 'SIGN IN'; ?>
 
 <section>
 	<div class="row justify-content-lg-center justify-content-md-center">

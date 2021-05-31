@@ -31,6 +31,7 @@ class ControllerCrud {
 		$this->_employeeManager = new EmployeeManager();
 		$this->_extensionManager = new ExtensionManager();
 		$this->_adminManager->checkSession();
+		
 		if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['delete'])) {
 			$this->CRUDExecuter($anURL[1]);
 		} else {

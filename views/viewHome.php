@@ -1,4 +1,3 @@
-<?php $this->_title = 'Home'; ?>
+<?php $this->_title = 'HOME'; ?>
 
-
-
+<p>Hello World!</p>

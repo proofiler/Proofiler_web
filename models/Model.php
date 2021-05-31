@@ -183,8 +183,6 @@ class Model {
 
 		$request->closeCursor();
 
-		return $result;
+		return $result['RES'];
 	}
-
-
 }

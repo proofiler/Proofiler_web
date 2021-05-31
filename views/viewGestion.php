@@ -1,4 +1,4 @@
-<?php $this->_title = 'Gestion'; ?>
+<?php $this->_title = 'GESTION'; ?>
 
 <section>
 	<div class="row text-center justify-content-lg-center justify-content-md-center mb-5">
