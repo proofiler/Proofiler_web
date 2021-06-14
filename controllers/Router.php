@@ -4,16 +4,18 @@ class Router {
 	private $_controller;
 	private $_view;
 
+	/**
+	 * Autoload classes, verifies the information provided and redirects to right controller
+	 * @return void
+	 */
 	public function routeRequest() {
 		try {
-			// Automatic loading of classes
 			spl_autoload_register(function ($aClass) {
 				require_once('models/'.$aClass.'.php');
 			});
 
 			$URL = [];
 
-			// The right controller is included depending on the user's action
 			if (isset($_GET['URL'])) {
 				$URL = explode('/', filter_var($_GET['URL'], FILTER_SANITIZE_URL));
 				$controller = ucfirst(strtolower($URL[0]));

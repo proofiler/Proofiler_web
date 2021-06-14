@@ -7,6 +7,11 @@ class ControllerGestion {
 	private $_stationManager;
 	private $_informationMessage = false;
 
+	/**
+	 * Redirects to an error page or to the main function according to the parameters provided via the URL
+	 * @param array $anURL 
+	 * @return void
+	 */
 	public function __construct($anURL) {
 		if (count($anURL) > 1) {
 			throw new Exception('Page not found');
@@ -15,6 +20,10 @@ class ControllerGestion {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and sends the summary mail about the last detected viruses or sends the configuration to the white stations
+	 * @return void
+	 */
 	private function main() {
 		$this->_scanManager = new ScanManager();
 		$this->_adminManager = new AdminManager();

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * AES-256-CBC string encryption
+ * @param string $data 
+ * @param string $passphrase 
+ * @return string
+ */
 function my_encrypt($data, $passphrase='5cd10f8a394a241beae003415a1b4569672696468c5aec18f880d1eb2043ad0c') {
 	$secret_key = hex2bin($passphrase);
 	$iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));

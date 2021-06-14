@@ -5,6 +5,11 @@ class ControllerSignin {
 	private $_adminManager;
 	private $_errorMessage = false;
 
+	/**
+	 * Redirects to an error page or to the main function according to the parameters provided via the URL
+	 * @param array $anURL 
+	 * @return void
+	 */
 	public function __construct($anURL) {
 		if (count($anURL) > 1) {
 			throw new Exception('Page not found');
@@ -13,6 +18,10 @@ class ControllerSignin {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and redirects to the gestion view after creating the user's session
+	 * @return void
+	 */
 	private function main() {
 		if (isset($_POST['signin'])) {
 			if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['password']) && !empty($_POST['password']))) {
@@ -49,6 +58,10 @@ class ControllerSignin {
 		}
 	}
 
+	/**
+	 * Redirects to the login view
+	 * @return void
+	 */
 	private function printForm() {
 		$errorMessage = $this->_errorMessage;
 

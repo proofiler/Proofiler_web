@@ -14,6 +14,11 @@ class ControllerCrud {
 	private $_informationMessageCreate = false;
 	private $_informationMessageOthers = false;
 
+	/**
+	 * Redirects to an error page or to the main function according to the parameters provided via the URL
+	 * @param array $anURL 
+	 * @return void
+	 */
 	public function __construct($anURL) {
 		if (count($anURL) != 2) {
 			throw new Exception('Page not found');
@@ -22,6 +27,11 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Redirects to the main router or the main executor according to the parameters sent
+	 * @param array $anURL 
+	 * @return void
+	 */
 	private function main($anURL) {
 		$this->_usbManager = new UsbManager();
 		$this->_scanManager = new ScanManager();
@@ -39,6 +49,11 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Redirects to the correct CRUD router based on the parameter provided
+	 * @param string $aCRUD 
+	 * @return void
+	 */
 	private function CRUDRouter($aCRUD) {
 		switch ($aCRUD) {
 			case 'admins':
@@ -68,6 +83,11 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Redirects to the correct CRUD executor based on the provided parameter
+	 * @param string $aCRUD 
+	 * @return void
+	 */
 	private function CRUDExecuter($aCRUD) {
 		switch ($aCRUD) {
 			case 'admins':
@@ -167,6 +187,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Redirects to the administrators CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterAdmin() {
 		$admins = $this->_adminManager->getAllAdmins();
 
@@ -174,6 +198,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'admins' => $admins));
 	}
 
+	/**
+	 * Redirects to the extensions CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterExtension() {
 		$extensions = $this->_extensionManager->getAllExtensions();
 
@@ -181,6 +209,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'extensions' => $extensions));
 	}
 
+	/**
+	 * Redirects to the stations CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterStation() {
 		$stations = $this->_stationManager->getAllStations();
 
@@ -188,6 +220,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'stations' => $stations));
 	}
 
+	/**
+	 * Redirects to the employees CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterEmployee() {
 		$employees = $this->_employeeManager->getAllEmployees();
 
@@ -195,6 +231,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'employees' => $employees));
 	}
 
+	/**
+	 * Redirects to the USBs CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterUsb() {
 		$usbs = $this->_usbManager->getAllUsbs();
 
@@ -202,6 +242,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'usbs' => $usbs));
 	}
 
+	/**
+	 * Redirects to the scans CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterScan() {
 		$scans = $this->_scanManager->getAllScans();
 
@@ -209,6 +253,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'scans' => $scans));
 	}
 
+	/**
+	 * Redirects to the viruses CRUD view
+	 * @return void
+	 */
 	private function CRUDRouterVirus() {
 		$viruses = $this->_virusManager->getAllViruses();
 
@@ -216,6 +264,10 @@ class ControllerCrud {
 		$this->_view->generate(array('errorMessageCreate' => $this->_errorMessageCreate, 'errorMessageOthers' => $this->_errorMessageOthers, 'informationMessageCreate' => $this->_informationMessageCreate, 'informationMessageOthers' => $this->_informationMessageOthers, 'viruses' => $viruses));
 	}
 
+	/**
+	 * Verifies the information provided and adds the new administrator's information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterAdminAdd() {
 		if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['password']) && !empty($_POST['password'])) && (isset($_POST['confirmPassword']) && !empty($_POST['confirmPassword']))) {
 			$email = htmlspecialchars($_POST['email']);
@@ -251,6 +303,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the new extension's information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterExtensionAdd() {
 		if ((isset($_POST['name']) && ($_POST['name'] === '0' || !empty($_POST['name'])))) {
 			$name = htmlspecialchars($_POST['name']);
@@ -269,6 +325,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the new station's information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterStationAdd() {
 		if ((isset($_POST['ip']) && !empty($_POST['ip']))) {
 			$ip = htmlspecialchars($_POST['ip']);
@@ -292,6 +352,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the new employee's information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterEmployeeAdd() {
 		if ((isset($_POST['email']) && !empty($_POST['email'])) && (isset($_POST['firstName']) && ($_POST['firstName'] === '0' || !empty($_POST['firstName']))) && (isset($_POST['lastName']) && ($_POST['lastName'] === '0' || !empty($_POST['lastName'])))) {
 			$email = htmlspecialchars($_POST['email']);
@@ -317,6 +381,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the new USB's information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterUsbAdd() {
 		if ((isset($_POST['uuid']) && ($_POST['uuid'] === '0' || !empty($_POST['uuid']))) && (isset($_POST['brand']) && ($_POST['brand'] === '0' || !empty($_POST['brand']))) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
 			$uuid = htmlspecialchars($_POST['uuid']);
@@ -348,6 +416,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the new scan's information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterScanAdd() {
 		if ((isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['uuidUsb']) && ($_POST['uuidUsb'] === '0' || !empty($_POST['uuidUsb'])))) {
 			$duration = htmlspecialchars($_POST['duration']);
@@ -391,6 +463,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the new virus information to the database
+	 * @return void
+	 */
 	private function CRUDExecuterVirusAdd() {
 		if ((isset($_POST['name']) && ($_POST['name'] === '0' || !empty($_POST['name']))) && (isset($_POST['hash']) && !empty($_POST['hash'])) && (isset($_POST['idScan']) && !empty($_POST['idScan']))) {
 			$name = htmlspecialchars($_POST['name']);
@@ -413,6 +489,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the administrator's information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterAdminUpdate() {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
 			if (filter_var($_POST['emailNotModified'], FILTER_VALIDATE_EMAIL)) {
@@ -509,6 +589,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the extension's information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterExtensionUpdate() {
 		if ((isset($_POST['nameNotModified']) && ($_POST['nameNotModified'] === '0' || !empty($_POST['nameNotModified'])))) {
 			if ((isset($_POST['nameModified']) && ($_POST['nameModified'] === '0' || !empty($_POST['nameModified'])))) {
@@ -538,6 +622,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the station's information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterStationUpdate() {
 		if (isset($_POST['ipNotModified']) && !empty($_POST['ipNotModified']) && (isset($_POST['hashNotModified']) && !empty($_POST['hashNotModified']))) {
 			if ((isset($_POST['ipModified']) && !empty($_POST['ipModified'])) && (isset($_POST['hashModified']) && ($_POST['hashModified'] === '0' || !empty($_POST['hashModified'])))) {
@@ -585,6 +673,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the employee's information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterEmployeeUpdate() {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
 			if ((isset($_POST['emailModified']) && !empty($_POST['emailModified'])) && (isset($_POST['firstName']) && ($_POST['firstName'] === '0' || !empty($_POST['firstName']))) && (isset($_POST['lastName']) && ($_POST['lastName'] === '0' || !empty($_POST['lastName'])))) {
@@ -626,6 +718,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the USB's information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterUsbUpdate() {
 		if ((isset($_POST['uuidNotModified']) && ($_POST['uuidNotModified'] === '0' || !empty($_POST['uuidNotModified'])))) {
 			if ((isset($_POST['uuidModified']) && ($_POST['uuidModified'] === '0' || !empty($_POST['uuidModified']))) && (isset($_POST['brand']) && ($_POST['brand'] === '0' || !empty($_POST['brand']))) && (isset($_POST['registration']) && !empty($_POST['registration'])) && (isset($_POST['emailEmployee']) && !empty($_POST['emailEmployee']))) {
@@ -668,6 +764,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the scan's information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterScanUpdate() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
 			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['dateScan']) && !empty($_POST['dateScan'])) && (isset($_POST['duration']) && ($_POST['duration'] === '0' || !empty($_POST['duration']))) && (isset($_POST['nbFiles']) && ($_POST['nbFiles'] === '0' || !empty($_POST['nbFiles']))) && (isset($_POST['nbVirus']) && ($_POST['nbVirus'] === '0' || !empty($_POST['nbVirus']))) && (isset($_POST['nbErrors']) && ($_POST['nbErrors'] === '0' || !empty($_POST['nbErrors']))) && (isset($_POST['uuidUsb']) && ($_POST['uuidUsb'] === '0' || !empty($_POST['uuidUsb'])))) {
@@ -738,6 +838,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and modifies the virus information in the database
+	 * @return void
+	 */
 	private function CRUDExecuterVirusUpdate() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
 			if ((isset($_POST['idModified']) && !empty($_POST['idModified'])) && (isset($_POST['name']) && ($_POST['name'] === '0' || !empty($_POST['name']))) && (isset($_POST['hash']) && !empty($_POST['hash'])) && (isset($_POST['idScan']) && !empty($_POST['idScan']))) {
@@ -785,6 +889,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the administrator's information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterAdminDelete() {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
 			$emailNotModified = htmlspecialchars($_POST['emailNotModified']);
@@ -809,6 +917,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the extension's information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterExtensionDelete() {
 		if ((isset($_POST['nameNotModified']) && ($_POST['nameNotModified'] === '0' || !empty($_POST['nameNotModified'])))) {
 			$nameNotModified = htmlspecialchars($_POST['nameNotModified']);
@@ -827,6 +939,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the station's information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterStationDelete() {
 		if (isset($_POST['ipNotModified']) && !empty($_POST['ipNotModified'])) {
 			$ipNotModified = htmlspecialchars(($_POST['ipNotModified']));
@@ -845,6 +961,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the employee's information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterEmployeeDelete() {
 		if (isset($_POST['emailNotModified']) && !empty($_POST['emailNotModified'])) {
 			$emailNotModified = htmlspecialchars(($_POST['emailNotModified']));
@@ -863,6 +983,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the USB's information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterUsbDelete() {
 		if ((isset($_POST['uuidNotModified']) && ($_POST['uuidNotModified'] === '0' || !empty($_POST['uuidNotModified'])))) {
 			$uuidNotModified = htmlspecialchars(($_POST['uuidNotModified']));
@@ -881,6 +1005,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the scan's information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterScanDelete() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
 			$idNotModified = htmlspecialchars(($_POST['idNotModified']));
@@ -904,6 +1032,10 @@ class ControllerCrud {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and removes the virus information from the database.
+	 * @return void
+	 */
 	private function CRUDExecuterVirusDelete() {
 		if (isset($_POST['idNotModified']) && !empty($_POST['idNotModified'])) {
 			$idNotModified = htmlspecialchars(($_POST['idNotModified']));

@@ -6,6 +6,11 @@ class ControllerDashboard {
 	private $_virusManager;
 	private $_informationMessage = false;
 
+	/**
+	 * Redirects to an error page or to the main function according to the parameters provided via the URL
+	 * @param array $anURL 
+	 * @return void
+	 */
 	public function __construct($anURL) {
 		if (count($anURL) != 2) {
 			throw new Exception('Page not found');
@@ -14,6 +19,11 @@ class ControllerDashboard {
 		}
 	}
 
+	/**
+	 * Redirects to the dashboard router according to the parameters sent
+	 * @param array $anURL 
+	 * @return void
+	 */
 	private function main($anURL) {
 		$this->_scanManager = new ScanManager();
 		$this->_virusManager = new VirusManager();
@@ -21,6 +31,11 @@ class ControllerDashboard {
 		$this->dashboardRouter($anURL[1]);
 	}
 
+	/**
+	 * Redirects to the dashboard functions based on the parameter provided
+	 * @param string $aCRUD 
+	 * @return void
+	 */
 	private function dashboardRouter($anEndpoint) {
 		switch ($anEndpoint) {
 			case 'information':
@@ -35,6 +50,10 @@ class ControllerDashboard {
 		}
 	}
 
+	/**
+	 * Redirects to the information dashboard view
+	 * @return void
+	 */
 	private function dashboardInformation() {
 		$nbFiles = $this->_scanManager->getSumFile();
 		$nbScans = $this->_scanManager->getCountScan();
@@ -46,6 +65,10 @@ class ControllerDashboard {
 		$this->_view->generate(array('informationMessage' => $this->_informationMessage, 'nbFiles' => $nbFiles, 'nbScans' => $nbScans, 'nbViruses' => $nbViruses, 'nbAverageVirus' => $nbAverageVirus, 'nbAverageTimeScan' => $nbAverageTimeScan));
 	}
 
+	/**
+	 * Redirects to the top dashboard view
+	 * @return void
+	 */
 	private function dashboardTop() {
 		$viruses = $this->_virusManager->getCountVirusBy();
 

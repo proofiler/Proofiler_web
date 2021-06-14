@@ -4,6 +4,11 @@ class ControllerData {
 	private $_scanManager;
 	private $_adminManager;
 
+	/**
+	 * Redirects to an error page or to the main function according to the parameters provided via the URL
+	 * @param array $anURL 
+	 * @return void
+	 */
 	public function __construct($anURL) {
 		if (count($anURL) > 1) {
 			throw new Exception('Page not found 1');
@@ -14,6 +19,11 @@ class ControllerData {
 		}
 	}
 
+	/**
+	 * Verifies the information provided and adds the information from the scan and potential associated viruses to the database
+	 * @param string $someData 
+	 * @return void
+	 */
 	private function main($someData) {
 		$data = $this->my_decrypt($someData);
 		$data = json_decode(base64_decode($data));
@@ -71,6 +81,12 @@ class ControllerData {
 		}
 	}
 
+	/**
+	 * Decrypting the received data
+	 * @param string $data 
+	 * @param string $passphrase 
+	 * @return string
+	 */
 	private function my_decrypt($data, $passphrase='5cd10f8a394a241beae003415a1b4569672696468c5aec18f880d1eb2043ad0c') {
 		$secret_key = hex2bin($passphrase);
 		$json = json_decode(base64_decode($data));

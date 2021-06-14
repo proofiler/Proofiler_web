@@ -1,13 +1,21 @@
-<?php
+&<?php
 
 class Model {
 	private static $_BDD;
 
+	/**
+	 * Initiation of the connection to the database
+	 * @return void
+	 */
 	private static function setBDD() {
 		self::$_BDD = new PDO('mysql:host=localhost;dbname=Pr00filer;charset=utf8', 'root', 'Pr00filer');
 		self::$_BDD->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 	}
 
+	/**
+	 * Get the database connection instance
+	 * @return object PDO
+	 */
 	protected function getBDD() {
 		if (self::$_BDD === null) {
 			self::setBDD();
@@ -16,6 +24,11 @@ class Model {
 		return self::$_BDD;
 	}
 
+	/**
+	 * Get all the data of a table
+	 * @param string $aTable 
+	 * @return array
+	 */
 	protected function selectAll($aTable) {
 		$result = [];
 		$object = substr(ucfirst(strtolower($aTable)), 0, -1);
@@ -32,6 +45,13 @@ class Model {
 		return $result;
 	}
 
+	/**
+	 * Get all the data of a row of a table
+	 * @param string $aTable 
+	 * @param string $anAttribut 
+	 * @param string/int $anAttributValue 
+	 * @return void
+	 */
 	protected function selectOne($aTable, $anAttribut, $anAttributValue) {
 		$result = false;
 		$object = substr(ucfirst(strtolower($aTable)), 0, -1);
@@ -49,6 +69,12 @@ class Model {
 		return $result;
 	}
 
+	/**
+	 * Adding a new element to a table
+	 * @param string $aTable 
+	 * @param array $someData 
+	 * @return void
+	 */
 	protected function insertOne($aTable, $someData) {
 		$realRequest = 'INSERT INTO '.$aTable.' (';
 		foreach ($someData as $key => $value) {
@@ -70,6 +96,14 @@ class Model {
 		$request->closeCursor();
 	}
 
+	/**
+	 * Editing a new element in a table
+	 * @param string $aTable 
+	 * @param string $anAttribut 
+	 * @param string/int $anAttributValue 
+	 * @param arrary $someData 
+	 * @return void
+	 */
 	protected function updateOne($aTable, $anAttribut, $anAttributValue, $someData) {
 		$realRequest = 'UPDATE '.$aTable.' SET ';
 		foreach ($someData as $key => $value) {
@@ -86,6 +120,13 @@ class Model {
 		$request->closeCursor();
 	}
 
+	/**
+	 * Deleting a new element in a table
+	 * @param string $aTable 
+	 * @param string $anAttribut 
+	 * @param string/int $anAttributValue 
+	 * @return void
+	 */
 	protected function deleteOne($aTable, $anAttribut, $anAttributValue) {
 		$realRequest = 'DELETE FROM '.$aTable.' WHERE '.$anAttribut.' = :'.$anAttribut;
 		$request = $this->getBDD()->prepare($realRequest);
@@ -94,6 +135,12 @@ class Model {
 		$request->closeCursor();
 	}
 
+	/**
+	 * Get the maximum id of a table
+	 * @param string $aTable 
+	 * @param string/int $anAttribut 
+	 * @return int
+	 */
 	protected function getMaximum($aTable, $anAttribut) {
 		$result = 0;
 
@@ -109,6 +156,12 @@ class Model {
 		return $result;
 	}
 
+	/**
+	 * Get the number of elements in a table
+	 * @param string $aTable 
+	 * @param string $anAttribut 
+	 * @return int
+	 */
 	protected function getCount($aTable, $anAttribut) {
 		$result = 0;
 
@@ -124,6 +177,12 @@ class Model {
 		return $result;
 	}
 
+	/**
+	 * Get the number of elements in a table with another attribute
+	 * @param string $aTable 
+	 * @param string $anAttribut 
+	 * @return array
+	 */
 	protected function getCountBy($aTable, $anAttribut) {
 		$result = [];
 
@@ -140,6 +199,10 @@ class Model {
 
 	}
 
+	/**
+	 * Recovery of USB keys associated with the most viruses detected
+	 * @return array
+	 */
 	protected function usbsWithMostViruses() {
 		$result = [];
 
@@ -155,6 +218,12 @@ class Model {
 		return $result;
 	}
 
+	/**
+	 * Get the sum of an attribute of the elements of a table
+	 * @param string $aTable 
+	 * @param string $anAttribut 
+	 * @return int
+	 */
 	protected function getSum($aTable, $anAttribut) {
 		$result = 0;
 
@@ -170,6 +239,10 @@ class Model {
 		return $result;
 	}
 
+	/**
+	 * Get the average number of viruses detected each month
+	 * @return array
+	 */
 	protected function getVirusPerMonth(){
 		
 		$result = 0;
