@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<link href="/Proofiler_web/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/Proofiler_web/vendor/style.css" rel="stylesheet">
 		<title><?= $title ?></title>
 	</head>
 	<body>

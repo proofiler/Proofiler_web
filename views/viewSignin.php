@@ -1,8 +1,11 @@
 <?php $this->_title = 'SIGN IN'; ?>
 
-<section>
-	<div class="row justify-content-lg-center justify-content-md-center">
-		<div class="col-lg-6 col-md-6 bg-light py-5 border">
+<section class=mt-0>
+	<div class="row pt-0">
+		<div class="col-lg-6 col-md-6">
+			<img src="/Proofiler_web/assets/hibou.png" height="100%" width="800px">
+		</div>
+		<div class="col-lg-6 col-md- my-auto">
 			<form action="" method="POST">
 				<div class="row justify-content-lg-center justify-content-md-center text-center">
 					<div class="col-lg-8 col-md-8">
