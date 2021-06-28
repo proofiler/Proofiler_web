@@ -8,7 +8,7 @@ Prérequis:
 - PhpMyAdmin
 
 Contributeurs:
-- Jennifer Bonillo  
-- Kevin Petta
-- Adrien Lasalle
-- Joris Vallend
+- Morrigan
+- Nyxott
+- AlrikRr
+- jvallend
