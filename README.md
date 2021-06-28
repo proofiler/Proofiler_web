@@ -6,3 +6,9 @@ Prérequis:
 - Apache 
 - MySQL
 - PhpMyAdmin
+
+Contributeurs:
+- Jennifer Bonillo  
+- Kevin Petta
+- Adrien Lasalle
+- Joris Vallend
