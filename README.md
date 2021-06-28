@@ -1,6 +1,7 @@
 ## Pr00filer Website
 
-The proofiler website allows you to view statistics on all the analyses performed by the white station fleet. In addition, it also allows administrators to configure the white stations remotely and centrally.
+Ce code vient s'ajouter au code pour raspberry. Il permet de faire des statistiques avec les virus et les scans qui lui sont envoyés.
+Le site contient une partie non connectés avec des statistiques et une partie connecté pour l'administration des données.
 
 Prérequis:
 - Apache 
